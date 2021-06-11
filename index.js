@@ -4,28 +4,29 @@ const msgHandler = require('./msgHndlr')
 const options = require('./options')
 
 const start = async (client = new Client()) => {
-        console.log('[SERVER] Server Started!')
+
+        console.log('[SERVER] Servidor iniciado!')
+
         // Force it to keep the current session
         client.onStateChanged((state) => {
-            console.log('[Client State]', state)
+            console.log('[Status do cliente]', state)
             if (state === 'CONFLICT' || state === 'UNLAUNCHED') client.forceRefocus()
         })
+
         // listening on message
         client.onMessage((async (message) => {
+
             client.getAmountOfLoadedMessages()
             .then((msg) => {
                 if (msg >= 3000) {
                     client.cutMsgCache()
                 }
             })
+
             msgHandler(client, message)
+
         }))
 
-        client.onGlobalParticipantsChanged((async (heuh) => {
-            await welcome(client, heuh)
-            //left(client, heuh)
-            }))
-        
         client.onAddedToGroup(((chat) => {
             let totalMem = chat.groupMetadata.participants.length
             if (totalMem < 30) { 
@@ -35,17 +36,14 @@ const start = async (client = new Client()) => {
             }
         }))
 
-        /*client.onAck((x => {
-            const { from, to, ack } = x
-            if (x !== 3) client.sendSeen(to)
-        }))*/
+        client.onGlobalParticipantsChanged((async (message) => {
 
-        // listening on Incoming Call
-        client.onIncomingCall(( async (call) => {
-            await client.sendText(call.peerJid, 'Maaf, saya tidak bisa menerima panggilan. nelfon = block!')
-            .then(() => client.contactBlock(call.peerJid))
+            await welcome(client, message)
+            //left(client, heuh)
+
         }))
-    }
+        
+}
 
 create(options(true, start))
     .then(client => start(client))
