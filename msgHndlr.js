@@ -73,8 +73,26 @@ module.exports = msgHandler = async (client, message) => {
                 await client.sendFile(from, './media/berrante.mpeg', 'Toca o berrante seu moço', 'AAAAAAAAAUHHH', id)
                 break
 
+            case 'sexto':
+            case 'sextô':
+                await client.reply(from, 'ôpa, bora??', id)
+                const gif1 = await fs.readFileSync('./media/sexto.webp', { encoding: "base64" })
+                await client.sendImageAsSticker(from, `data:image/gif;base64,${gif1.toString('base64')}`)
+                break
+                    
+            case 'bot gay':
+            case 'bot viado':
+            case 'bot otario':
+            case 'bot lixo':
+                await client.reply(from, 'É pra esculachar?...', id)
+                const gif2 = await fs.readFileSync('./media/xingping.webp', { encoding: "base64" })
+                await client.sendImageAsSticker(from, `data:image/gif;base64,${gif2.toString('base64')}`)
+                break
+
             case 'bom dia bot':
                 await client.reply(from, 'Bom dia? so se for pra você que dormiu a noite toda...', id)
+                const gif3 = await fs.readFileSync('./media/tudosobcontrole.webp', { encoding: "base64" })
+                await client.sendImageAsSticker(from, `data:image/gif;base64,${gif3.toString('base64')}`)
                 break
     
             case 'boa tarde bot':
@@ -91,6 +109,8 @@ module.exports = msgHandler = async (client, message) => {
     
             case 'fala bot':
                 await client.reply(from, 'Fala você... ou digite: !ajuda', id)
+                const gif4 = await fs.readFileSync('./media/pensando.webp', { encoding: "base64" })
+                await client.sendImageAsSticker(from, `data:image/gif;base64,${gif4.toString('base64')}`)
                 break
         }
 
