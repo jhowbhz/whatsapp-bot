@@ -65,7 +65,18 @@ module.exports = msgHandler = async (client, message) => {
         console.log(color('FALAS ====>'), falas)
         console.log(color('COMANDO ====>'), command)
 
+        console.log('FALOU DE MIM =====>', color(falas.indexOf("bot") != -1) )
+
+        if( falas.indexOf("bot") != -1 ){
+
+            await client.reply(from, 'Ta falando de mim? digite !ajuda', id)
+            const gif4 = await fs.readFileSync('./media/pensando.webp', { encoding: "base64" })
+            await client.sendImageAsSticker(from, `data:image/gif;base64,${gif4.toString('base64')}`)
+
+        }
+
         switch(falas) {
+
             case '!berrante':
             case 'toca o berrante':
             case 'toca o berrante bot':
@@ -81,9 +92,15 @@ module.exports = msgHandler = async (client, message) => {
                 break
                     
             case 'bot gay':
+            case 'o bot é gay':
             case 'bot viado':
+            case 'o bot viado':
             case 'bot otario':
+            case 'o é bot otario':
+            case 'o bot otario':
             case 'bot lixo':
+            case 'o bot lixo':
+                
                 await client.reply(from, 'É pra esculachar?...', id)
                 const gif2 = await fs.readFileSync('./media/xingping.webp', { encoding: "base64" })
                 await client.sendImageAsSticker(from, `data:image/gif;base64,${gif2.toString('base64')}`)
