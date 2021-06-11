@@ -42,7 +42,6 @@ module.exports = msgHandler = async (client, message) => {
                 St: '[❗] Envie uma imagem com uma legenda *!s* ou marque a imagem que já foi enviada',
             }
         }
-
         const time = moment(t * 1000).format('DD/MM HH:mm:ss')
         const botNumber = await client.getHostNumber()
         const blockNumber = await client.getBlockedIds()
@@ -235,7 +234,6 @@ module.exports = msgHandler = async (client, message) => {
             	client.reply(from, 'Este comando só pode ser usado em grupos!', id)
             }
             break
-
         case '!adminlista':
             if (!isGroupMsg) return client.reply(from, 'Este comando só pode ser usado em grupos!', id)
             let mimin = ''
@@ -345,7 +343,6 @@ module.exports = msgHandler = async (client, message) => {
             await client.demoteParticipant(groupId, mentionedJidList[0])
             await client.sendTextWithMentions(from, `Pedido recebido, excluir trabalho @${mentionedJidList[0]}.`)
             break
-
         case '!apagar':
             if (!isGroupMsg) return client.reply(from, 'Este recurso só pode ser usado em grupos', id)
             if (!isGroupAdmins) return client.reply(from, 'Este recurso só pode ser usado por administradores de grupo', id)
