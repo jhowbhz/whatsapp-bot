@@ -61,10 +61,9 @@ module.exports = msgHandler = async (client, message) => {
         if (isBlocked) return
         //if (!isOwner) return
 
-        console.log(color('ARGS ===>'), args)
-        console.log(color('FALAS ====>'), falas)
-        console.log(color('COMANDO ====>'), command)
-
+        console.log('ARGS ===>', color(args))
+        console.log('FALAS ====>', color(falas))
+        console.log('COMANDO ====>', color(command))
         console.log('FALOU DE MIM =====>', color(falas.indexOf("bot") != -1) )
 
         if( falas.indexOf("bot") != -1 ){
@@ -78,14 +77,18 @@ module.exports = msgHandler = async (client, message) => {
         switch(falas) {
 
             case '!berrante':
+            case 'toca berrante':
             case 'toca o berrante':
+            case 'bot toca berrante':
             case 'toca o berrante bot':
             case 'toca o berrante savio':
                 await client.sendFile(from, './media/berrante.mpeg', 'Toca o berrante seu moço', 'AAAAAAAAAUHHH', id)
                 break
 
             case 'sexto':
+            case 'sextou':
             case 'sextô':
+            case 'sextôu':
                 await client.reply(from, 'ôpa, bora??', id)
                 const gif1 = await fs.readFileSync('./media/sexto.webp', { encoding: "base64" })
                 await client.sendImageAsSticker(from, `data:image/gif;base64,${gif1.toString('base64')}`)
@@ -93,7 +96,11 @@ module.exports = msgHandler = async (client, message) => {
                     
             case 'bot gay':
             case 'o bot é gay':
+            case 'o bot é cuzao':
+            case 'vai tomar no cu bot':
+            case 'tomar no cu bot':
             case 'bot viado':
+            case 'cu bot':
             case 'o bot viado':
             case 'bot otario':
             case 'o é bot otario':
@@ -120,8 +127,40 @@ module.exports = msgHandler = async (client, message) => {
                 await client.reply(from, `Boa noite pra você também! já são ${moment().format('HH:mm')} to indo nessa também...`, id)
                 break
     
+            case 'que dia e hoje bot?':
+            case 'que dia é hoje bot?':
+            case 'oi bot que dia é hoje?':
+            case 'que dia e hoje?':
+            case 'que dia é hoje?':
+                await client.reply(from, `Tem calendário não? hoje é dia ${moment().format('DD/MM/YYYY HH:mm:ss')}`, id)
+            break
+
+            case 'que dia e hoje bot ?':
+            case 'que dia é hoje bot ?':
+            case 'que dia e hoje ?':
+            case 'que dia é hoje ?':
+                await client.reply(from, `Tira o espaço entre o texto e virgula, e vc não tem calendário não? hoje é dia ${moment().format('DD/MM/YYYY HH:mm:ss')}`, id)
+            break
+
             case 'oi bot':
                 await client.reply(from, 'Fala? que ta pegando? sei fazer algumas coisas, digite: !ajuda', id)
+                break
+
+            case 'tocufome':
+            case 'to com fome':
+            case 'estou com fome':
+                await client.reply(from, 'Come uai...', id)
+                break    
+
+            case 'como vc está bot?':
+            case 'como vai bot?':
+            case 'bot como vc está?':
+            case 'bot como vai?':
+            case 'oi bot como vai?':
+            case 'bot como vc esta?':
+            case 'oi bot como vc esta?':
+            case 'oi bot como vc ta?':
+                await client.reply(from, `To bem não, hoje é *dia ${ moment().format('DD') }* e estou aqui vigiando grupo...`, id)
                 break
     
             case 'fala bot':
@@ -138,16 +177,12 @@ module.exports = msgHandler = async (client, message) => {
         case '!verdadeouconsequencia':
 
             await client.reply(from, 'Meu criador ainda não me ensinou a fazer isso... Volta mais tarde!', id)
-
             break
 
         case '!teste':
 
-            //client.sendFile(from, './media/berrante.mpeg', 'Toca o berrante seu moço', 'AAAAAAAAAUHHH', id)
-
             const gif = await fs.readFileSync('./media/rizada.gif', { encoding: "base64" })
             await client.sendImageAsSticker(from, `data:image/gif;base64,${gif.toString('base64')}`)
-
             break
 
         case '!meunumero':
@@ -156,19 +191,7 @@ module.exports = msgHandler = async (client, message) => {
             let ddd = chatNumber[0].substring(2, 4)
             let number = chatNumber[0].substring(4, 12)
 
-            dddPermitidos = [31, 32, 33, 34, 35, 37, 38]
-
-            if( dddPermitidos.includes(parseInt(ddd)) ){
-
-                //console.log('from ===>', from, 'id ====> ', id)
-                client.reply(from, `Seu numero é: *${number}* seu ddd é: *${ddd}*`, id)
-
-            }else{
-
-                client.reply(from, `*NUMERO NÃO PERMITIDO!* 👋 Tchauu...`, id)
-                await client.removeParticipant(groupId, sender.id)
-
-            }
+            client.reply(from, `Seu numero é: *${number}* seu ddd é: *${ddd}*`, id)
 
             break
             
@@ -271,6 +294,7 @@ module.exports = msgHandler = async (client, message) => {
             	client.reply(from, 'Este comando só pode ser usado em grupos!', id)
             }
             break
+
         case '!adminlista':
             if (!isGroupMsg) return client.reply(from, 'Este comando só pode ser usado em grupos!', id)
             let mimin = ''
@@ -334,9 +358,10 @@ module.exports = msgHandler = async (client, message) => {
             try {
                 await client.addParticipant(from,`${orang}@c.us`)
             } catch {
-                client.reply(from, mess.error.Ad, id)
+                await client.reply(from, mess.error.Ad, id)
             }
             break
+
         case '!ban':
 
             if (!isGroupMsg) return client.reply(from, 'Este recurso só pode ser usado em grupos', id)
@@ -345,19 +370,22 @@ module.exports = msgHandler = async (client, message) => {
             
             if (mentionedJidList.length === 0) return client.reply(from, 'Para usar este comando, envie o comando *!ban* @tagmember', id)
             await client.sendText(from, `Pronto! removido \n${mentionedJidList.join('\n')}`)
+            
             for (let i = 0; i < mentionedJidList.length; i++) {
                 if (groupAdmins.includes(mentionedJidList[i])) return client.reply(from, mess.error.Ki, id)
 
+                console.log("BANIDO ===>", mentionedJidList[i])
                 await client.removeParticipant(groupId, mentionedJidList[i])
             }
-            
             break
+
         case '!sair':
 
             if (!isGroupMsg) return client.reply(from, 'Este comando só pode ser usado em grupos', id)
             if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado por administradores de grupo', id)
-            await client.sendText(from,'Sayonara').then(() => client.leaveGroup(groupId))
+                await client.sendText(from,'Sayonara').then(() => client.leaveGroup(groupId))
             break
+
         case '!promover':
 
             if (!isGroupMsg) return client.reply(from, 'Este recurso só pode ser usado em grupos', id)
@@ -367,8 +395,9 @@ module.exports = msgHandler = async (client, message) => {
             if (mentionedJidList.length >= 2) return client.reply(from, 'Desculpe, este comando só pode ser usado por 1 usuário.', id)
             if (groupAdmins.includes(mentionedJidList[0])) return client.reply(from, 'Desculpe, o usuário já é um administrador.', id)
             await client.promoteParticipant(groupId, mentionedJidList[0])
-            await client.sendTextWithMentions(from, `Perintah diterima, menambahkan @${mentionedJidList[0]} sebagai admin.`)
+            await client.sendTextWithMentions(from, `Comando aceito, adicionado @${mentionedJidList[0]} como admin.`)
             break
+
         case '!rebaixar':
 
             if (!isGroupMsg) return client.reply(from, 'Este recurso só pode ser usado em grupos', id)
@@ -377,23 +406,35 @@ module.exports = msgHandler = async (client, message) => {
             if (mentionedJidList.length === 0) return client.reply(from, 'Para usar este recurso, envie o comando *!rebaixar* @tagadmin', id)
             if (mentionedJidList.length >= 2) return client.reply(from, 'Desculpe, este comando só pode ser usado com 1 pessoa.', id)
             if (!groupAdmins.includes(mentionedJidList[0])) return client.reply(from, 'Maaf, user tersebut tidak menjadi admin.', id)
-            await client.demoteParticipant(groupId, mentionedJidList[0])
-            await client.sendTextWithMentions(from, `Pedido recebido, excluir trabalho @${mentionedJidList[0]}.`)
+                await client.demoteParticipant(groupId, mentionedJidList[0])
+                await client.sendTextWithMentions(from, `Pedido recebido, excluir trabalho @${mentionedJidList[0]}.`)
             break
         case '!apagar':
+
             if (!isGroupMsg) return client.reply(from, 'Este recurso só pode ser usado em grupos', id)
             if (!isGroupAdmins) return client.reply(from, 'Este recurso só pode ser usado por administradores de grupo', id)
             if (!quotedMsg) return client.reply(from, 'Errado !!, envie o comando *!apagar [marqueamensagem] *', id)
             if (!quotedMsgObj.fromMe) return client.reply(from, 'Errado !!, o bot não pode deletar o chat de outro usuário!', id)
-            client.deleteMessage(quotedMsgObj.chatId, quotedMsgObj.id, false)
+
+                await client.deleteMessage(quotedMsgObj.chatId, quotedMsgObj.id, false)
             break
 
         case '!ajuda':
+        case '!help':
+        case 'me ajuda bot':
+        case 'bot me ajuda':
+            
             client.sendText(from, help)
             break
         }
+
     } catch (err) {
+
+        await client.sendText(`Puts, deu merda... chama o @5531995360492 e mostra essa merda aqui.... ${err}`)
+
         console.log(color('[ERROR]', 'red'), err)
         client.kill().then(a => console.log(a))
+
     }
+
 }
