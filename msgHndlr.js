@@ -9,14 +9,17 @@ const { randomNimek, fb, sleep } = require('./lib/functions')
 const { help } = require('./lib/help')
 const nsfw_ = JSON.parse(fs.readFileSync('./lib/NSFW.json'))
 const welkom = JSON.parse(fs.readFileSync('./lib/welcome.json'))
+
 const gify = require('gify')
+const YoutubeMp3Downloader = require("youtube-mp3-downloader");
+const YTsearch = require('youtube-search');
 
 moment.tz.setDefault('America/Sao_Paulo').locale('id')
 
 module.exports = msgHandler = async (client, message) => {
     try {
 
-        const { type, id, from, t, sender, isGroupMsg, chat, caption, isMedia, mimetype, quotedMsg, quotedMsgObj, mentionedJidList } = message
+        const { urlParametro, type, id, from, t, sender, isGroupMsg, chat, caption, isMedia, mimetype, quotedMsg, quotedMsgObj, mentionedJidList } = message
         let { body } = message
         const { name, formattedTitle } = chat
         let { pushname, verifiedName } = sender
@@ -35,6 +38,17 @@ module.exports = msgHandler = async (client, message) => {
                 }
             }
         }
+        
+        const YD = new YoutubeMp3Downloader({
+            "ffmpegPath": "/usr/bin/ffmpeg",        // FFmpeg binary location
+            "outputPath": "./media/to/mp3",    // Output file location (default: the home directory)
+            "youtubeVideoQuality": "highestaudio",  // Desired video quality (default: highestaudio)
+            "queueParallelism": 2,                  // Download parallelism (default: 1)
+            "progressTimeout": 2000,                // Interval in ms for the progress reports (default: 1000)
+            "allowWebm": false,                      // Enable download from WebM sources (default: false)
+            "outputOptions" : ["-af", "silenceremove=1:0:-50dB"], // Additional output options passend to ffmpeg
+            "youtubeVideoQuality": 'lowest'
+        });
 
         const mess = {
             wait: '⏳ Espera porra, já to fazendo a figurinha...',
@@ -42,6 +56,7 @@ module.exports = msgHandler = async (client, message) => {
                 St: '[❗] Envie uma imagem com uma legenda *!s* ou marque a imagem que já foi enviada',
             }
         }
+
         const time = moment(t * 1000).format('DD/MM HH:mm:ss')
         const botNumber = await client.getHostNumber()
         const blockNumber = await client.getBlockedIds()
@@ -61,21 +76,39 @@ module.exports = msgHandler = async (client, message) => {
         if (isBlocked) return
         //if (!isOwner) return
 
-        console.log('ARGS ===>', color(args))
+        console.log('FROM ===>', color(pushname))
+        console.log('ARGUMENTOS ===>', color(args))
         console.log('FALAS ====>', color(falas))
         console.log('COMANDO ====>', color(command))
-        console.log('FALOU DE MIM =====>', color(falas.indexOf("bot") != -1) )
+        console.log('ALGUEM FALOU DE MIM =====>', color(falas.indexOf("bot") != -1) )
 
+        let compare = "/9j/4aaqskzjrgabaqaaaqabaad/2wbdaamcagicagmcagidawmdbayebaqebaggbgugcqgkcgkicqkkda8mcgsocwkjdrendg8qebeqcgwsexiqew8qebd/2wbdaqmdawqdbagebagqcwklebaqebaqebaqebaqebaqebaqebaqebaqebaqebaqebaqebaqebaqebaqebaqebaqebd/waarcabkagqdasiaahebaxeb/8qahaaaagmaaweaaaaaaaaaaaaabgcabaubagmi/8qapbaaaqmcbqiebqeecquaaaaaaqidbauraaysitetqqciuweumngbkrujqlkhccqzynkx0ehwjuscssh/xaaaaqacawebaaaaaaaaaaaaaaaebqidbgeh/8qalxeaaqqbbaagagecbwaaaaaaaqacaxeeeiexqqutuwgbksjxorthjdizschr8f/aaawdaqaceqmrad8anjnarhrzluzrjckrii98bnqp/wauww1nnunjbg49jmhpoaxzn9oltkh33bvjbktdqx0i5xj3sua4fairtohlcp096e903ueei4wn1jjtlursui2gzmogqzmjt6djunt/adwc5tggmvnevtisoshfpythtdjravllpyanhdyxzwkrl9w+k1urseepshlbtadxqixhkz5l+shxw9xbadqfkdbip+2ckkqdstt42bokaylkstrsei5omupminvhpaim1akjbptsq559dz9sdlezfnjwxorsj1lrloehyqdiavsqf72w/oib7sdparbk0ulb3r1cmpwxsfxbaqkk+pn9vrx+ceepugwpxzhc4vwxc3u95mzgolzf5morngxcbae4btb1smmqmikvoemyogqsut2to9j74sptccisksafrjrynjgfi1rt2uqfdqxvt2c1ddkl+p9fbg7dcbn0poop2p1xic"
+        if(falas.indexOf(compare) != -1){
+            await client.reply(from, `Ah pronto, começou os maconheiro!`, id)
+        }
+        
         if( falas.indexOf("bot") != -1 ){
 
-            await client.reply(from, 'Ta falando de mim? digite !ajuda', id)
+            await client.reply(from, 'Oi? ta falando de mim? é só digitar: *me ajuda*', id)
             const gif4 = await fs.readFileSync('./media/pensando.webp', { encoding: "base64" })
             await client.sendImageAsSticker(from, `data:image/gif;base64,${gif4.toString('base64')}`)
 
         }
 
+        if( (falas.indexOf("caralho") != -1) || (falas.indexOf("cuzao") != -1) || (falas.indexOf("porra") != -1) || (falas.indexOf("caraleo") != -1) || (falas.indexOf("piranha") != -1) || (falas.indexOf("puta") != -1) ){
+
+            await client.reply(from, 'Sem palavrões por favor...', id)
+
+        }
+
         switch(falas) {
 
+            case 'me ajuda bot':
+            case 'me ajuda':
+            case 'bot me ajuda':
+                client.sendText(from, help)
+            break
+            
             case '!berrante':
             case 'toca berrante':
             case 'toca o berrante':
@@ -84,6 +117,31 @@ module.exports = msgHandler = async (client, message) => {
             case 'toca o berrante savio':
                 await client.sendFile(from, './media/berrante.mpeg', 'Toca o berrante seu moço', 'AAAAAAAAAUHHH', id)
                 break
+
+            case 'garibalda sua safada':
+                client.sendText(from, 'Esse comando foi desativado!', id)
+            break
+
+            case 'oi bot conversa comigo vei':
+            case 'conversa comigo bot':
+                client.sendText(from, 'Eu não, tem nada melhor pra fazer não?', id)
+            break
+
+            case 'oi sumida':
+            case 'oi ta sumida':
+            case 'oi sua sumida':
+            case 'e ai isabelle':
+            case 'e aí isabelle':
+            case 'e aí Isabelle':
+                
+                let songsArray1 = [
+                    './media/oisumida.ogg',
+                ];
+                let randomNumber1 = Math.floor(Math.random()*songsArray1.length);
+                let escolhido1 = songsArray1[randomNumber1];
+
+                await client.sendFile(from, escolhido1, '', 'AAAAAAAAAUHHH', id)
+            break
 
             case 'sexto':
             case 'sextou':
@@ -106,6 +164,9 @@ module.exports = msgHandler = async (client, message) => {
             case 'o é bot otario':
             case 'o bot otario':
             case 'bot lixo':
+            case 'fodas bot':
+            case 'vai se fuder bot':
+            case 'vai se foder bot':
             case 'o bot lixo':
                 
                 await client.reply(from, 'É pra esculachar?...', id)
@@ -127,8 +188,8 @@ module.exports = msgHandler = async (client, message) => {
                 await client.reply(from, `Boa noite pra você também! já são ${moment().format('HH:mm')} to indo nessa também...`, id)
                 break
     
-            case 'que dia e hoje bot?':
-            case 'que dia é hoje bot?':
+            case 'que dia e hoje bot':
+            case 'que dia é hoje bot':
             case 'oi bot que dia é hoje?':
             case 'que dia e hoje?':
             case 'que dia é hoje?':
@@ -143,7 +204,7 @@ module.exports = msgHandler = async (client, message) => {
             break
 
             case 'oi bot':
-                await client.reply(from, 'Fala? que ta pegando? sei fazer algumas coisas, digite: !ajuda', id)
+                await client.reply(from, 'Fala? que ta pegando? sei fazer algumas coisas, digite: *me ajuda*', id)
                 break
 
             case 'tocufome':
@@ -160,7 +221,8 @@ module.exports = msgHandler = async (client, message) => {
             case 'bot como vc esta?':
             case 'oi bot como vc esta?':
             case 'oi bot como vc ta?':
-                await client.reply(from, `To bem não, hoje é *dia ${ moment().format('DD') }* e estou aqui vigiando grupo...`, id)
+                const gif99 = await fs.readFileSync('./media/tranquilao.webp', { encoding: "base64" })
+                await client.sendImageAsSticker(from, `data:image/gif;base64,${gif99.toString('base64')}`)
                 break
     
             case 'fala bot':
@@ -171,18 +233,175 @@ module.exports = msgHandler = async (client, message) => {
         }
 
         switch(command) {
+        
+        case 'y0':
+            if( ( typeof(teste) != 'undefined' ) ) {
+                await client.sendText(from, `Copie e cole`, id)
+                await client.sendText(from, `${teste[0]}`, id)
+            }else{
+                await client.sendText(from, `Pesquise algo para começar...`, id)
+            } 
+            break;
+        case 'y1':
+            if( ( typeof(teste) != 'undefined' ) ) {
+                await client.sendText(from, `Copie e cole`, id)
+                await client.sendText(from, `${teste[1]}`, id)
+            }else{
+                await client.sendText(from, `Pesquise algo para começar...`, id)
+            } 
+            break;
+        case 'y2':
+            if( ( typeof(teste) != 'undefined' ) ) {
+                await client.sendText(from, `Copie e cole`, id)
+                await client.sendText(from, `${teste[2]}`, id)
+            }else{
+                await client.sendText(from, `Pesquise algo para começar...`, id)
+            } 
+            break;
+        case 'y3':
+            if( ( typeof(teste) != 'undefined' ) ) {
+                await client.sendText(from, `Copie e cole`, id)
+                await client.sendText(from, `${teste[3]}`, id)
+            }else{
+                await client.sendText(from, `Pesquise algo para começar...`, id)
+            } 
+            break;
+        case 'y4':
+            if( ( typeof(teste) != 'undefined' ) ) {
+                await client.sendText(from, `Copie e cole`, id)
+                await client.sendText(from, `${teste[4]}`, id)
+            }else{
+                await client.sendText(from, `Pesquise algo para começar...`, id)
+            } 
+            break;
+        case 'y5':
+            if( ( typeof(teste) != 'undefined' ) ) {
+                await client.sendText(from, `Copie e cole`, id)
+                await client.sendText(from, `${teste[5]}`, id)
+            }else{
+                await client.sendText(from, `Pesquise algo para começar...`, id)
+            }
+            break;
 
-        case '!eununca':
-        case '!jododavelha':
-        case '!verdadeouconsequencia':
+        case '!buscamusica':
+        case '!youtube':
+        case '!bm':
+        case '!buscarmusica':
+            
+            if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o devo buscar?', id)
 
-            await client.reply(from, 'Meu criador ainda não me ensinou a fazer isso... Volta mais tarde!', id)
+            let opts = {
+                maxResults: 5,
+                key: 'AIzaSyA53q1WJv1-6IqyCVjqHjlar7pWfKiTOtQ'
+            };
+              
+            await YTsearch(args[1], opts, async (err, results) => {
+                if(err) return console.log(err);
+                let resultado = ``
+                teste = [];
+                results.forEach( async(data, index) => {
+                    teste[`${index}`] = `!yt youtu.be=${data?.id}`;
+                    resultado += `\n*Titulo*: ${data?.title}\n*Link*: https://youtu.be/${data?.id}\n*Baixe:* !yt youtu.be=${data?.id} *[ y${index} ]*\n---\n`;
+                });
+                await client.reply(from, `Achei isso aqui...\n${resultado}`, id)
+            });
+
             break
 
-        case '!teste':
+        case '!yt':
+        case '!baixarvideo':
 
-            const gif = await fs.readFileSync('./media/rizada.gif', { encoding: "base64" })
-            await client.sendImageAsSticker(from, `data:image/gif;base64,${gif.toString('base64')}`)
+            if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o video sem o link?', id)
+
+            try {
+                const url = `${args[1]}`
+                const ID_VIDEO = url.split('=')[1];
+                console.log('URL DO VIDEO ====>', url)
+                console.log('ID DO VIDEO ====>', ID_VIDEO)
+
+                await client.reply(from, `Baixando e convertendo o video em mp3...`, id)
+                await YD.download(`${ID_VIDEO}`);
+
+                await YD.on("finished", async (err, data) => {
+                    await client.sendFile(from, data?.file, '', 'AAAAAAAAAUHHH', id)
+                    await client.reply(from, `_Ufa, eita trem pesado, mas ta na mão..._\n\n*Titulo*: ${data?.title}\n*Link*: https://youtu.be/${ID_VIDEO}\n-----\n*Transferidos*: ${Math.round(data?.stats?.transferredBytes) }kb \n*Velocidade média*: ${Math.round(data?.stats?.averageSpeed)}`, id)
+                });
+
+                YD.on("progress", async (progress) => {
+                    let percente = parseInt(progress?.progress?.percentage);
+                    console.log(`BAIXANDO O VIDEO ===> ${percente}%`)
+                });
+                
+                YD.on("error", async (error) => {
+                    console.log(`ERRO AO BAIXAR VIDEO ===> ${JSON.stringify(error)}`);
+                    await client.reply(from, `Porra bicho, não estou conseguindo baixar, tenta de novo...`, id)
+                });
+
+            } catch (error) {
+                await client.reply(from, `Porra bicho, deu merda... tenta de novo. \n\n${JSON.stringify(error)}`, id)
+            }
+
+            break
+        
+        case '!cep':
+
+            if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o cep?', id)
+
+            let response = await axios.get(`https://viacep.com.br/ws/${args[1]}/json/`)
+            const { logradouro, bairro, localidade, siafi, ibge } = response.data
+
+            await client.reply(from, 'Buscando o CEP... pera um pouco', id)
+            await client.sendText(from, `🌎️ Rua: ${logradouro}, ${bairro}, ${localidade}\nSiafi: ${siafi}, Ibge: ${ibge} `)
+
+            break
+
+        case '!eununca':
+        case '!jogodavelha':
+        case '!verdadeouconsequencia':
+
+            await client.reply(from, 'Eu ainda estou aprendendo isso, tem um preview...', id)
+
+            let play1 = from
+            console.log(`PLAY 1 ===>`, play1)
+
+            if (mentionedJidList.length === 0) return client.reply(from, 'Para usar este comando, envie o comando *!jogarjogovelha* @tagmember', id)
+            for (let i = 0; i < mentionedJidList.length; i++) {
+                //if (groupAdmins.includes(mentionedJidList[i])) return client.reply(from, mess.error.Ki, id)
+
+                console.log(`PLAY ${i} ===>`, mentionedJidList[i])
+                play2 = mentionedJidList[i]
+            }
+
+            //let play2 = play2
+
+            switch (command) {
+                case 'X':
+                    _1 = 'X';
+                    break;
+                case 'O':
+                    _1 = 'X';
+                    _9 = 'X';
+                    break;
+
+                case '1':
+                    _1 = 'X';
+                    _2 = 'X';
+                    _3 = 'X';
+                    _4 = 'X';
+                    _5 = 'X';
+                    _6 = 'X';
+                    _7 = 'X';
+                    _8 = 'X';
+                    _9 = 'X';
+                    break;
+            }
+            
+            //await client.reply(from, 'Ah, então vamos jogar jogo da velha? bora começar...', id)
+            await client.sendText(from, `1 2 3\n4 5 6\n7 8 9`)
+            await client.sendText(from, ` *${play1}* x *${play2}*\nPor quem vamos começar?`)
+
+            await client.reply(from, 'Isso é tudo..', id)
+
             break
 
         case '!meunumero':
@@ -233,12 +452,12 @@ module.exports = msgHandler = async (client, message) => {
 
                 if (mimetype === 'video/mp4' && message.duration < 30 || mimetype === 'image/gif' && message.duration < 30) {
                     const mediaData = await decryptMedia(message, uaOverride)
-                    client.reply(from, '⏳ Pera porra, já to fazendo a figurinha!', id)
+                    client.reply(from, 'Pera porra, já to fazendo a figurinha!', id)
                     const filename = `./media/aswu.${mimetype.split('/')[1]}`
                     await fs.writeFileSync(filename, mediaData)
 
                     let opts = {
-                        rate: 20,
+                        rate: 30,
                         delay: 0
                     };
 
@@ -421,9 +640,6 @@ module.exports = msgHandler = async (client, message) => {
 
         case '!ajuda':
         case '!help':
-        case 'me ajuda bot':
-        case 'bot me ajuda':
-            
             client.sendText(from, help)
             break
         }

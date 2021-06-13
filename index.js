@@ -32,7 +32,7 @@ const start = async (client = new Client()) => {
             if (totalMem < 30) { 
             	client.sendText(chat.id, `Ei, os membros são apenas ${totalMem}, se você quiser convidar bots, o número mínimo de mem é 30`).then(() => client.leaveGroup(chat.id)).then(() => client.deleteChat(chat.id))
             } else {
-                client.sendText(chat.groupMetadata.id, `Olá membros do grupo *${chat.contact.name} * obrigado por convidar este bot, para ver o menu envie *!ajuda *`)
+                client.sendText(chat.groupMetadata.id, `Olá membros do grupo *${chat.contact.name} * obrigado por convidar este bot, para ver o menu envie *me ajuda*`)
             }
         }))
 
