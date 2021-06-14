@@ -1,6 +1,17 @@
 module.exports = options = (headless, start) => {
     const options = {
-        sessionId: 'BarBar',
+        blockCrashLogs: false,
+        disableSpins: false,
+        hostNotificationLang: 'PT_BR',
+        logConsole: false,
+        //popup: true,
+        viewport: {
+            width: 1920,
+            height: 1200
+        },
+        popup: 3012,
+        defaultViewport: null,
+        sessionId: 'ChuckNorris',
         headless: headless,
         qrTimeout: 0,
         authTimeout: 60,

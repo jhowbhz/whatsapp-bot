@@ -1,13 +1,14 @@
-const { create, Client } = require('@open-wa/wa-automate')
+const { create, Client, decryptMedia, ev, SimpleListener, smartUserAgent, NotificationLanguage } = require('@open-wa/wa-automate')
 const welcome = require('./lib/welcome')
 const msgHandler = require('./msgHndlr')
 const options = require('./options')
+
+const WEBHOOK_ADDRESS = 'https://en6p3ti7f72f9jz.m.pipedream.net'
 
 const start = async (client = new Client()) => {
 
         console.log('[SERVER] Servidor iniciado!')
 
-        // Force it to keep the current session
         client.onStateChanged((state) => {
             console.log('[Status do cliente]', state)
             if (state === 'CONFLICT' || state === 'UNLAUNCHED') client.forceRefocus()
@@ -26,6 +27,10 @@ const start = async (client = new Client()) => {
             msgHandler(client, message)
 
         }))
+        
+        client.onAnyMessage(message=>{
+            console.log('chegou mensagem ====>', message.body);
+        })
 
         client.onAddedToGroup(((chat) => {
             let totalMem = chat.groupMetadata.participants.length
@@ -42,6 +47,42 @@ const start = async (client = new Client()) => {
             //left(client, heuh)
 
         }))
+
+
+        /* //client.onAck((data) => console.log(data.id,data.body,data.ack));
+        client.onAck( async (msg) => {
+
+            
+        })
+ */
+        //client.registerWebhook('OK', WEBHOOK_ADDRESS, `${data?.event}`, 1 )
+        await client.registerWebhook(`https://dialogflow.clients6.google.com/v2/projects/apigratis-uueh/agent/sessions/7b3f38a1-f880-b174-f4c8-45a7caba3901:detectIntent`, 'onAck', {
+            /* data: {
+                text: 'Ola',
+                languageCode:'pt-br'
+            }, */
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ya29.a0AfH6SMCjwEE1njE6EtjIeIY7PZVF32XbuwPzlKMHVrY3sbZKnk4wjYFtKirRUhxjxCFtjnOxSC6IJGjgNyd9ndM1PKtyGnXQ2QSkVca3aMeFd72cd8IAVXbLz5dUS3O4Ixzm8RlDVScZgkCeWBMwEbRBAJl0z0l0HttX1DQPKYk9IpHnWGD7JWqNNpptMgL_uSUS5wEuaAOIZC10DIl9fSI_7PswSnXm99kC3QD5VVjaIQ'
+            },
+            //data: 'text=Ola&languageCode=pt-br',
+            method:'POST',
+            params: {
+                'text': 'Ola',
+                'languageCode': 'pt-br',
+            },
+            transformResponse: [(data) => {
+                console.log(JSON.stringify(data));
+            }],
+            responseType: 'json',
+            responseEncoding: 'utf8', // default
+            validateStatus: (status) => {
+                console.log(status);
+            }}, 5)
+
+        client.onIncomingCall( call => {
+            console.log('ALGUEM ESTÁ LIGANDO ===>',call)
+        });
         
 }
 

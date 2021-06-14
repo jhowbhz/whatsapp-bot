@@ -7,12 +7,20 @@ const fetch = require('node-fetch')
 const color = require('./lib/color')
 const { randomNimek, fb, sleep } = require('./lib/functions')
 const { help } = require('./lib/help')
-const nsfw_ = JSON.parse(fs.readFileSync('./lib/NSFW.json'))
 const welkom = JSON.parse(fs.readFileSync('./lib/welcome.json'))
+const path = require('path');
+
+const http = require('http');
+const https = require('https');
+const urlParse = require('url').parse;
 
 const gify = require('gify')
 const YoutubeMp3Downloader = require("youtube-mp3-downloader");
 const YTsearch = require('youtube-search');
+const googleTTS = require('google-tts-api'); // CommonJS
+
+//const dialogflow = require('@google-cloud/dialogflow');
+const uuid = require('uuid');
 
 moment.tz.setDefault('America/Sao_Paulo').locale('id')
 
@@ -283,6 +291,22 @@ module.exports = msgHandler = async (client, message) => {
             }
             break;
 
+        case 'tts!':
+            if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o devo buscar?', id)
+            let termoBusca = body.split('!');
+            url = await googleTTS.getAudioUrl(`${termoBusca[1]}`,{
+                lang: 'pt_BR',
+                slow: false,
+                host: 'https://translate.google.com',
+            });
+
+            const dest = await path.resolve(__dirname, './media/to/translate.mp3'); // file destination
+            await downloadFile(url, dest);
+            await client.sendFile(from, './media/to/translate.mp3', 'translate', 'AAAAAAAAAUHHH', id)
+
+            //await client.sendText(from, `${url}`, id)
+
+            break
         case '!buscamusica':
         case '!youtube':
         case '!bm':
@@ -307,6 +331,62 @@ module.exports = msgHandler = async (client, message) => {
             });
 
             break
+        case '!teste':
+
+            let teste = await client.getBatteryLevel()
+            await client.reply(from, `----------------------\nNível de bateria é de: ${JSON.stringify(teste)}%\n----------------------`, id)   
+            
+            //if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o devo buscar?', id)
+
+
+            /*
+            c onsole.log(`Buscando por: ${args[1]}`)
+            let teste = await wiki({
+                apiUrl: 'https://awoiaf.westeros.org/api.php',
+                origin: null
+            }).search(`${args[1]}`);
+
+            await client.reply(from, `Achei isso aqui...\n${JSON.stringify(teste)}`, id)   
+
+            await wiki({ apiUrl: 'https://es.wikipedia.org/w/api.php' })
+            .page(`${args[1]}`)
+            //.then()
+            .then( async page => {
+                await client.reply(from, `Achei isso aqui...\n${JSON.stringify(page.info())}`, id)   
+            }); */
+            
+            break
+
+        /* case '!teste':
+            
+            if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o devo baixar?', id)
+
+            // TypeScript: import ytdl from 'ytdl-core'; with --esModuleInterop
+            // TypeScript: import * as ytdl from 'ytdl-core'; with --allowSyntheticDefaultImports
+            // TypeScript: import ytdl = require('ytdl-core'); with neither of the above
+
+            const url = `${args[1]}`
+            const ID_VIDEO = url.split('=')[1];
+
+            console.log('URL DO VIDEO ====>', url)
+            console.log('ID DO VIDEO ====>', ID_VIDEO)
+
+            const video = ytdl(`${url}`, { quality: 'highestvideo' })
+            .on('response', async (_, downloaded, total) => {
+
+                tracker.video = { downloaded, total };
+                await client.sendFile(from, `./media/to/video.mp4`, '', 'AAAAAAAAAUHHH', id)
+
+            }).pipe(fs.createWriteStream(`./media/to/video.mp4`))
+            .then(() => console.log('finished screenshot video'));
+            
+            //await client.sendFile(from, `./media/to/video.mp4`, '', 'AAAAAAAAAUHHH', id)
+
+            let info = await ytdl.getInfo(`${ID_VIDEO}`);
+            await client.reply(from, `Achei isso aqui...\n${JSON.stringify(info)}`, id)
+
+            console.log(info)
+            break */
 
         case '!yt':
         case '!baixarvideo':
@@ -640,7 +720,12 @@ module.exports = msgHandler = async (client, message) => {
 
         case '!ajuda':
         case '!help':
-            client.sendText(from, help)
+            await client.sendText(from, help)
+            let batteryLevel = await client.getBatteryLevel()
+            let isPlugged = await client.getIsPlugged(from)
+            let connectionState = await client.getConnectionState()
+            
+            await client.reply(from, `----------------------\n*Status*: ${connectionState}\n*Bateria*: ${batteryLevel}%\n*Carregando*: ${(isPlugged) ? 'Sim' : 'Não' }\n----------------------`, id)   
             break
         }
 
@@ -654,3 +739,42 @@ module.exports = msgHandler = async (client, message) => {
     }
 
 }
+
+function downloadFile(url, dest) {
+    return new Promise((resolve, reject) => {
+      const info = urlParse(url);
+      const httpClient = info.protocol === 'https:' ? https : http;
+      const options = {
+        host: info.host,
+        path: info.path,
+        headers: {
+          'user-agent': 'WHAT_EVER',
+        },
+      };
+  
+      httpClient
+        .get(options, (res) => {
+          // check status code
+          if (res.statusCode !== 200) {
+            const msg = `request to ${url} failed, status code = ${res.statusCode} (${res.statusMessage})`;
+            reject(new Error(msg));
+            return;
+          }
+  
+          const file = fs.createWriteStream(dest);
+          file.on('finish', function () {
+            // close() is async, call resolve after close completes.
+            file.close(resolve);
+          });
+          file.on('error', function (err) {
+            // Delete the file async. (But we don't check the result)
+            fs.unlink(dest);
+            reject(err);
+          });
+  
+          res.pipe(file);
+        })
+        .on('error', reject)
+        .end();
+    });
+  }
