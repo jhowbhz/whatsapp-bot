@@ -331,69 +331,18 @@ module.exports = msgHandler = async (client, message) => {
             });
 
             break
-        case '!teste':
+        case '!bateria':
 
-            let teste = await client.getBatteryLevel()
-            await client.reply(from, `----------------------\nNível de bateria é de: ${JSON.stringify(teste)}%\n----------------------`, id)   
-            
-            //if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o devo buscar?', id)
-
-
-            /*
-            c onsole.log(`Buscando por: ${args[1]}`)
-            let teste = await wiki({
-                apiUrl: 'https://awoiaf.westeros.org/api.php',
-                origin: null
-            }).search(`${args[1]}`);
-
-            await client.reply(from, `Achei isso aqui...\n${JSON.stringify(teste)}`, id)   
-
-            await wiki({ apiUrl: 'https://es.wikipedia.org/w/api.php' })
-            .page(`${args[1]}`)
-            //.then()
-            .then( async page => {
-                await client.reply(from, `Achei isso aqui...\n${JSON.stringify(page.info())}`, id)   
-            }); */
-            
-            break
-
-        /* case '!teste':
-            
-            if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o devo baixar?', id)
-
-            // TypeScript: import ytdl from 'ytdl-core'; with --esModuleInterop
-            // TypeScript: import * as ytdl from 'ytdl-core'; with --allowSyntheticDefaultImports
-            // TypeScript: import ytdl = require('ytdl-core'); with neither of the above
-
-            const url = `${args[1]}`
-            const ID_VIDEO = url.split('=')[1];
-
-            console.log('URL DO VIDEO ====>', url)
-            console.log('ID DO VIDEO ====>', ID_VIDEO)
-
-            const video = ytdl(`${url}`, { quality: 'highestvideo' })
-            .on('response', async (_, downloaded, total) => {
-
-                tracker.video = { downloaded, total };
-                await client.sendFile(from, `./media/to/video.mp4`, '', 'AAAAAAAAAUHHH', id)
-
-            }).pipe(fs.createWriteStream(`./media/to/video.mp4`))
-            .then(() => console.log('finished screenshot video'));
-            
-            //await client.sendFile(from, `./media/to/video.mp4`, '', 'AAAAAAAAAUHHH', id)
-
-            let info = await ytdl.getInfo(`${ID_VIDEO}`);
-            await client.reply(from, `Achei isso aqui...\n${JSON.stringify(info)}`, id)
-
-            console.log(info)
-            break */
-
+            let level = await client.getBatteryLevel()
+            await client.reply(from, `----------------------\nNível de bateria é de: ${JSON.stringify(level)}%\n----------------------`, id)   
+      
         case '!yt':
         case '!baixarvideo':
 
             if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o video sem o link?', id)
 
             try {
+                
                 const url = `${args[1]}`
                 const ID_VIDEO = url.split('=')[1];
                 console.log('URL DO VIDEO ====>', url)
