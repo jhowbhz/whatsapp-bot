@@ -493,7 +493,7 @@ module.exports = msgHandler = async (client, message) => {
                     await gify(`${filename}`, './media/output.gif', opts, async (error) => {
                         if (error) {
                             
-                            client.reply(from, '[❗] Pera ai que deu merda... Tente novamente mais tarde', id)
+                            client.reply(from, `Pera ai que deu alguma merda... Tente novamente mais tarde mostra isso pro jhon\n${error}`, id)
 
                         };
                             
