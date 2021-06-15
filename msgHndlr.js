@@ -54,7 +54,7 @@ module.exports = msgHandler = async (client, message) => {
             "queueParallelism": 2,                  // Download parallelism (default: 1)
             "progressTimeout": 2000,                // Interval in ms for the progress reports (default: 1000)
             "allowWebm": false,                      // Enable download from WebM sources (default: false)
-            "outputOptions" : ["-af", "silenceremove=1:0:-50dB"], // Additional output options passend to ffmpeg
+            "outputOptions" : ["-af", "silenceremove=1:0:-50dB", '-movflags','frag_keyframe+empty_moov'], // Additional output options passend to ffmpeg
             "youtubeVideoQuality": 'lowest'
         });
 
@@ -342,7 +342,7 @@ module.exports = msgHandler = async (client, message) => {
             if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o video sem o link?', id)
 
             try {
-                
+
                 const url = `${args[1]}`
                 const ID_VIDEO = url.split('=')[1];
                 console.log('URL DO VIDEO ====>', url)
