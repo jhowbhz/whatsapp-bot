@@ -88,7 +88,7 @@ module.exports = msgHandler = async (client, message) => {
         console.log('ARGUMENTOS ===>', color(args))
         console.log('FALAS ====>', color(falas))
         console.log('COMANDO ====>', color(command))
-        console.log('ALGUEM FALOU DE MIM =====>', color( (falas.indexOf("chuck") != -1) )
+        console.log('ALGUEM FALOU DE MIM =====>', color( falas.indexOf("chuck") != -1 ) )
 
         if( (falas.indexOf("chuck") != -1) ){
             await client.reply(from, 'Oi? ta falando de mim? é só digitar: *me ajuda*', id)
