@@ -96,7 +96,7 @@ module.exports = msgHandler = async (client, message) => {
             await client.sendImageAsSticker(from, `data:image/gif;base64,${gif4.toString('base64')}`)
         }
 
-        if( (falas.indexOf("https://") != -1) || (falas.indexOf("http://") != -1) || (falas.indexOf("vendas") != -1) (falas.indexOf("venda mais") != -1) || (falas.indexOf("cartao credito") != -1) || (falas.indexOf("nota falsa") != -1) ){
+        if( (falas.indexOf("https://") != -1) || (falas.indexOf("http://") != -1) || (falas.indexOf("vendas") != -1) || (falas.indexOf("venda mais") != -1) || (falas.indexOf("cartao credito") != -1) || (falas.indexOf("nota falsa") != -1) ){
             await client.reply(from, 'Sem propagandas aqui por favor...', id)
         }
 
