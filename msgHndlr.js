@@ -90,23 +90,14 @@ module.exports = msgHandler = async (client, message) => {
         console.log('COMANDO ====>', color(command))
         console.log('ALGUEM FALOU DE MIM =====>', color(falas.indexOf("bot") != -1) )
 
-        let compare = "/9j/4aaqskzjrgabaqaaaqabaad/2wbdaamcagicagmcagidawmdbayebaqebaggbgugcqgkcgkicqkkda8mcgsocwkjdrendg8qebeqcgwsexiqew8qebd/2wbdaqmdawqdbagebagqcwklebaqebaqebaqebaqebaqebaqebaqebaqebaqebaqebaqebaqebaqebaqebaqebaqebd/waarcabkagqdasiaahebaxeb/8qahaaaagmaaweaaaaaaaaaaaaabgcabaubagmi/8qapbaaaqmcbqiebqeecquaaaaaaqidbauraaysitetqqciuweumngbkrujqlkhccqzynkx0ehwjuscssh/xaaaaqacawebaaaaaaaaaaaaaaaebqidbgeh/8qalxeaaqqbbaagagecbwaaaaaaaqacaxeeeiexqqutuwgbksjxorthjdizschr8f/aaawdaqaceqmrad8anjnarhrzluzrjckrii98bnqp/wauww1nnunjbg49jmhpoaxzn9oltkh33bvjbktdqx0i5xj3sua4fairtohlcp096e903ueei4wn1jjtlursui2gzmogqzmjt6djunt/adwc5tggmvnevtisoshfpythtdjravllpyanhdyxzwkrl9w+k1urseepshlbtadxqixhkz5l+shxw9xbadqfkdbip+2ckkqdstt42bokaylkstrsei5omupminvhpaim1akjbptsq559dz9sdlezfnjwxorsj1lrloehyqdiavsqf72w/oib7sdparbk0ulb3r1cmpwxsfxbaqkk+pn9vrx+ceepugwpxzhc4vwxc3u95mzgolzf5morngxcbae4btb1smmqmikvoemyogqsut2to9j74sptccisksafrjrynjgfi1rt2uqfdqxvt2c1ddkl+p9fbg7dcbn0poop2p1xic"
-        if(falas.indexOf(compare) != -1){
-            await client.reply(from, `Ah pronto, começou os maconheiro!`, id)
-        }
-        
-        if( falas.indexOf("bot") != -1 ){
-
+        if( falas.indexOf("oi bot") != -1 ){
             await client.reply(from, 'Oi? ta falando de mim? é só digitar: *me ajuda*', id)
             const gif4 = await fs.readFileSync('./media/pensando.webp', { encoding: "base64" })
             await client.sendImageAsSticker(from, `data:image/gif;base64,${gif4.toString('base64')}`)
-
         }
 
-        if( (falas.indexOf("caralho") != -1) || (falas.indexOf("cuzao") != -1) || (falas.indexOf("porra") != -1) || (falas.indexOf("caraleo") != -1) || (falas.indexOf("piranha") != -1) || (falas.indexOf("puta") != -1) ){
-
-            await client.reply(from, 'Sem palavrões por favor...', id)
-
+        if( (falas.indexOf("https://") != -1) || (falas.indexOf("https://") != -1) || (falas.indexOf("vendas") != -1) (falas.indexOf("venda mais") != -1) || (falas.indexOf("cartao credito") != -1) || (falas.indexOf("nota falsa") != -1) ){
+            await client.reply(from, 'Sem propagandas aqui por favor...', id)
         }
 
         switch(falas) {
@@ -128,11 +119,6 @@ module.exports = msgHandler = async (client, message) => {
 
             case 'garibalda sua safada':
                 client.sendText(from, 'Esse comando foi desativado!', id)
-            break
-
-            case 'oi bot conversa comigo vei':
-            case 'conversa comigo bot':
-                client.sendText(from, 'Eu não, tem nada melhor pra fazer não?', id)
             break
 
             case 'oi sumida':
@@ -211,10 +197,6 @@ module.exports = msgHandler = async (client, message) => {
                 await client.reply(from, `Tira o espaço entre o texto e virgula, e vc não tem calendário não? hoje é dia ${moment().format('DD/MM/YYYY HH:mm:ss')}`, id)
             break
 
-            case 'oi bot':
-                await client.reply(from, 'Fala? que ta pegando? sei fazer algumas coisas, digite: *me ajuda*', id)
-                break
-
             case 'tocufome':
             case 'to com fome':
             case 'estou com fome':
@@ -230,13 +212,10 @@ module.exports = msgHandler = async (client, message) => {
             case 'oi bot como vc esta?':
             case 'oi bot como vc ta?':
                 const gif99 = await fs.readFileSync('./media/tranquilao.webp', { encoding: "base64" })
-                await client.sendImageAsSticker(from, `data:image/gif;base64,${gif99.toString('base64')}`)
                 break
     
             case 'fala bot':
                 await client.reply(from, 'Fala você... ou digite: !ajuda', id)
-                const gif4 = await fs.readFileSync('./media/pensando.webp', { encoding: "base64" })
-                await client.sendImageAsSticker(from, `data:image/gif;base64,${gif4.toString('base64')}`)
                 break
         }
 
@@ -304,8 +283,6 @@ module.exports = msgHandler = async (client, message) => {
             await downloadFile(url, dest);
             await client.sendFile(from, './media/to/translate.mp3', 'translate', 'AAAAAAAAAUHHH', id)
 
-            //await client.sendText(from, `${url}`, id)
-
             break
         case '!buscamusica':
         case '!youtube':
@@ -314,10 +291,7 @@ module.exports = msgHandler = async (client, message) => {
             
             if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o devo buscar?', id)
 
-            let opts = {
-                maxResults: 5,
-                key: 'AIzaSyA53q1WJv1-6IqyCVjqHjlar7pWfKiTOtQ'
-            };
+            let opts = { maxResults: 5, key: 'AIzaSyA53q1WJv1-6IqyCVjqHjlar7pWfKiTOtQ' };
               
             await YTsearch(args[1], opts, async (err, results) => {
                 if(err) return console.log(err);
@@ -384,9 +358,7 @@ module.exports = msgHandler = async (client, message) => {
 
             break
 
-        case '!eununca':
         case '!jogodavelha':
-        case '!verdadeouconsequencia':
 
             await client.reply(from, 'Eu ainda estou aprendendo isso, tem um preview...', id)
 
