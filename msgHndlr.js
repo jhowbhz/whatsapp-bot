@@ -737,6 +737,7 @@ module.exports = msgHandler = async (client, message) => {
             break
 
         case '!ajuda':
+        case '!menu':
         case '!help':
             await client.sendText(from, help)
             let batteryLevel = await client.getBatteryLevel()
