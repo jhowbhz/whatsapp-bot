@@ -139,6 +139,12 @@ module.exports = msgHandler = async (client, message) => {
                 client.sendText(from, 'Esse comando foi desativado!', id)
             break
 
+            case 'kkkkkkk':
+            case 'kakaka':
+            case 'risada':
+                await client.sendFile(from, './media/risada.mp3', 'Risada', 'AAAAAAAAAUHHH', id)
+            break
+
             case 'oi sumida':
             case 'oi ta sumida':
             case 'oi sua sumida':
