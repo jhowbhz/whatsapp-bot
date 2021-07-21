@@ -117,6 +117,26 @@ module.exports = msgHandler = async (client, message) => {
                 await client.sendFile(from, './media/berrante.mpeg', 'Toca o berrante seu moço', 'AAAAAAAAAUHHH', id)
                 break
 
+            case 'trem bala':
+                await client.sendFile(from, './media/trembala.mpeg', 'Trem bala', 'AAAAAAAAAUHHH', id)
+                break
+
+            case 'vamos acordar':
+                await client.sendFile(from, './media/vamoacordar.mpeg', 'Vamos acordar porra', 'AAAAAAAAAUHHH', id)
+                break
+
+            case 'bom dia':
+                await client.sendFile(from, './media/bomdia.mpeg', 'Bom dia', 'AAAAAAAAAUHHH', id)
+                break
+
+            case 'acorda corno':
+                await client.sendFile(from, './media/acordaCorno.mpeg', 'Acorda corno', 'AAAAAAAAAUHHH', id)
+                break
+
+            case 'acorda':
+                await client.sendFile(from, './media/acorda.mpeg', 'Acorda', 'AAAAAAAAAUHHH', id)
+                break
+
             case 'garibalda sua safada':
                 client.sendText(from, 'Esse comando foi desativado!', id)
             break
@@ -358,6 +378,83 @@ module.exports = msgHandler = async (client, message) => {
 
             break
 
+        case '!buscamemes':
+            case '!buscameme':
+    
+                await client.reply(from, `Vasculhando a internet... pera um pouco`, id)
+    
+                let meme = await axios.get(`https://api.imgflip.com/get_memes`)
+    
+                myArray = []
+                meme?.data?.data?.memes.forEach( async(data, index) => {
+                    myArray.push({'url': data?.url, 'id': data?.id, 'name': data?.name})
+                    myArray = myArray.sort(() => Math.random() - 0.5)
+                });
+    
+                myArray.forEach( async(data, index) => {
+                    urlRandom = myArray[Math.floor(Math.random()*myArray.length)];
+                    if( index < 6 ){
+                        await client.sendImage(from, `${urlRandom?.url}`, `bot do jhon`, `*ID:* ${urlRandom?.id}\n*REF:* ${urlRandom?.name}` )
+                    }
+                });
+    
+                break
+    
+            case '!escrevememe':
+    
+                if (args.length === 1) return client.reply(from, 'Preciso de 2 textos e o ID da imagem para montar o meme... procure uma imagem !buscameme', id)
+    
+                let queryMeme = body.split('.');
+                if(queryMeme.length <= 3) return client.reply(from, 'Preciso de todos os parametros para montar o meme', id)
+    
+                if (queryMeme[1].length == 0) return client.reply(from, 'Preciso do texto 1...', id)
+                if (queryMeme[2].length == 0) return client.reply(from, 'Preciso do texto 2...', id)
+                if (queryMeme[3].length == 0 && queryMeme[3].length <= 3 ) return client.reply(from, 'Preciso de um ID...', id)
+    
+                let text0 = queryMeme[1] ?? 'Como eu vou adivinhar'
+                let text1 = queryMeme[2] ?? 'O que devo escrever?'
+                let text2 = queryMeme[3] ?? '91545132'
+    
+                let dataSend = `text0=${encodeURIComponent(text0)}&text1=${encodeURIComponent(text1)}&template_id=${text2}&username=${encodeURIComponent('jhowjhoe')}&password=${encodeURIComponent('sdVKRA2QZm9fQx!')}`
+                let makeMeme = await axios({
+                    method: "post",
+                    url: "https://api.imgflip.com/caption_image",
+                    data: dataSend,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                })
+    
+                if(makeMeme?.data?.success != true) return client.reply(from, `${makeMeme?.data?.error_message}`, id)
+                await client.sendImage(from, `${makeMeme?.data?.data?.url}`, `bot do jhon`, `Pronto, meme gerado com sucesso. você pode visualizar ele aqui nesse site ${makeMeme?.data?.data?.page_url}` )
+    
+                break
+    
+            case '!clima':
+    
+                if (args.length === 1) return client.reply(from, 'Ainda não adivinho coisas... preciso saber a cidade também', id)
+    
+                let cidade = body.split('.');
+                console.log(typeof(cidade[1]))
+    
+                if(typeof(cidade[1]) !== 'undefined'){
+                    if (cidade[1].length == 0) return client.reply(from, 'Preciso de uma cidade...', id)
+    
+                    await client.reply(from, `Verificando com São Pedro como está o clima em ${cidade[1]}... pera um pouco`, id)
+        
+                    let clima = await axios.get(`http://clima-bksoft.apibrasil.com.br/api/weather/city/?city=${ encodeURI(cidade[1]) }`)
+        
+                    if(clima?.data?.cod == '404') return  await client.reply(from, `Uai... ${clima?.data?.message}`, id)
+    
+                    await client.sendText(from, `*Temperatura:* ${clima?.data?.main?.temp} ºC \n*Sensação térmica:* ${clima?.data?.main?.feels_like} ºC \n*Temperatura mínima:* ${clima?.data?.main?.temp_min} ºC \n*Temperatura máxima:* ${clima?.data?.main?.temp_max} ºC \n*Pressão atmosférica:* ${clima?.data?.main?.pressure}\n*Umidade:* ${clima?.data?.main?.humidity}%
+    ----------------------\n${clima?.data?.name} - lat: ${clima?.data?.coord?.lat} lon: ${clima?.data?.coord?.lon}
+                    `)
+    
+                }else{
+                    
+                    return client.reply(from, 'Preciso de uma cidade...', id)
+                }
+                    
+                break
+
         case '!jogodavelha':
 
             await client.reply(from, 'Eu ainda estou aprendendo isso, tem um preview...', id)
@@ -453,7 +550,7 @@ module.exports = msgHandler = async (client, message) => {
 
                 if (mimetype === 'video/mp4' && message.duration < 30 || mimetype === 'image/gif' && message.duration < 30) {
                     const mediaData = await decryptMedia(message, uaOverride)
-                    client.reply(from, 'Pera porra, já to fazendo a figurinha!', id)
+                    client.reply(from, 'Já to fazendo a figurinha...', id)
                     const filename = `./media/aswu.${mimetype.split('/')[1]}`
                     await fs.writeFileSync(filename, mediaData)
 
@@ -475,7 +572,7 @@ module.exports = msgHandler = async (client, message) => {
                     });
 
                 } else (
-                    client.reply(from, '[❗] Envie o vídeo com a legenda *!sg* máx. 30 segundos!', id)
+                    client.reply(from, 'Envie o gif com a legenda *!sg* máx. 30 segundos!', id)
                 )
             }
             break
