@@ -2,8 +2,6 @@ const { decryptMedia } = require('@open-wa/wa-decrypt')
 const fs = require('fs-extra')
 const axios = require('axios')
 const moment = require('moment-timezone')
-const get = require('got')
-const fetch = require('node-fetch')
 const color = require('./lib/color')
 const { randomNimek, fb, sleep } = require('./lib/functions')
 const { help } = require('./lib/help')
@@ -305,83 +303,166 @@ module.exports = msgHandler = async (client, message) => {
 
             break
         case '!buscamusica':
-        case '!youtube':
-        case '!bm':
-        case '!buscarmusica':
-            
-            if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o devo buscar?', id)
-
-            let opts = { maxResults: 5, key: 'AIzaSyA53q1WJv1-6IqyCVjqHjlar7pWfKiTOtQ' };
-              
-            await YTsearch(args[1], opts, async (err, results) => {
-                if(err) return console.log(err);
-                let resultado = ``
-                teste = [];
-                results.forEach( async(data, index) => {
-                    teste[`${index}`] = `!yt youtu.be=${data?.id}`;
-                    resultado += `\n*Titulo*: ${data?.title}\n*Link*: https://youtu.be/${data?.id}\n*Baixe:* !yt youtu.be=${data?.id} *[ y${index} ]*\n---\n`;
-                });
-                await client.reply(from, `Achei isso aqui...\n${resultado}`, id)
-            });
-
-            break
-        case '!bateria':
-
-            let level = await client.getBatteryLevel()
-            await client.reply(from, `----------------------\nNível de bateria é de: ${JSON.stringify(level)}%\n----------------------`, id)   
-      
-        case '!yt':
-        case '!baixarvideo':
-
-            if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o video sem o link?', id)
-
-            try {
-
-                const url = `${args[1]}`
-                const ID_VIDEO = url.split('=')[1];
-                console.log('URL DO VIDEO ====>', url)
-                console.log('ID DO VIDEO ====>', ID_VIDEO)
-
-                await client.reply(from, `Baixando e convertendo o video em mp3...`, id)
-                await YD.download(`${ID_VIDEO}`);
-
-                await YD.on("finished", async (err, data) => {
-                    await client.sendFile(from, data?.file, '', 'AAAAAAAAAUHHH', id)
-                    await client.reply(from, `_Ufa, eita trem pesado, mas ta na mão..._\n\n*Titulo*: ${data?.title}\n*Link*: https://youtu.be/${ID_VIDEO}\n-----\n*Transferidos*: ${Math.round(data?.stats?.transferredBytes) }kb \n*Velocidade média*: ${Math.round(data?.stats?.averageSpeed)}`, id)
-                });
-
-                YD.on("progress", async (progress) => {
-                    let percente = parseInt(progress?.progress?.percentage);
-                    console.log(`BAIXANDO O VIDEO ===> ${percente}%`)
-                });
+            case '!youtube':
+            case '!bm':
+            case '!buscarmusica':
                 
-                YD.on("error", async (error) => {
-                    console.log(`ERRO AO BAIXAR VIDEO ===> ${JSON.stringify(error)}`);
-                    await client.reply(from, `Porra bicho, não estou conseguindo baixar, tenta de novo...`, id)
+                if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o devo buscar?', id)
+
+                let opts = { maxResults: 5, key: 'AIzaSyA53q1WJv1-6IqyCVjqHjlar7pWfKiTOtQ' };
+                
+                await YTsearch(args[1], opts, async (err, results) => {
+                    if(err) return console.log(err);
+                    let resultado = ``
+                    teste = [];
+                    results.forEach( async(data, index) => {
+                        teste[`${index}`] = `!yt youtu.be=${data?.id}`;
+                        resultado += `\n*Titulo*: ${data?.title}\n*Link*: https://youtu.be/${data?.id}\n*Baixe:* !yt youtu.be=${data?.id} *[ y${index} ]*\n---\n`;
+                    });
+                    await client.reply(from, `Achei isso aqui...\n${resultado}`, id)
                 });
 
-            } catch (error) {
-                await client.reply(from, `Porra bicho, deu merda... tenta de novo. \n\n${JSON.stringify(error)}`, id)
-            }
+                break
+            case '!bateria':
 
-            break
+                let level = await client.getBatteryLevel()
+                await client.reply(from, `----------------------\nNível de bateria é de: ${JSON.stringify(level)}%\n----------------------`, id)   
         
-        case '!cep':
+            case '!yt':
+            case '!baixarvideo':
 
-            if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o cep?', id)
+                if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o video sem o link?', id)
 
-            let response = await axios.get(`https://viacep.com.br/ws/${args[1]}/json/`)
-            const { logradouro, bairro, localidade, siafi, ibge } = response.data
+                try {
 
-            await client.reply(from, 'Buscando o CEP... pera um pouco', id)
-            await client.sendText(from, `🌎️ Rua: ${logradouro}, ${bairro}, ${localidade}\nSiafi: ${siafi}, Ibge: ${ibge} `)
+                    const url = `${args[1]}`
+                    const ID_VIDEO = url.split('=')[1];
+                    console.log('URL DO VIDEO ====>', url)
+                    console.log('ID DO VIDEO ====>', ID_VIDEO)
 
-            break
+                    await client.reply(from, `Baixando e convertendo o video em mp3...`, id)
+                    await YD.download(`${ID_VIDEO}`);
 
-        case '!buscamemes':
+                    await YD.on("finished", async (err, data) => {
+                        await client.sendFile(from, data?.file, '', 'AAAAAAAAAUHHH', id)
+                        await client.reply(from, `_Ufa, eita trem pesado, mas ta na mão..._\n\n*Titulo*: ${data?.title}\n*Link*: https://youtu.be/${ID_VIDEO}\n-----\n*Transferidos*: ${Math.round(data?.stats?.transferredBytes) }kb \n*Velocidade média*: ${Math.round(data?.stats?.averageSpeed)}`, id)
+                    });
+
+                    YD.on("progress", async (progress) => {
+                        let percente = parseInt(progress?.progress?.percentage);
+                        console.log(`BAIXANDO O VIDEO ===> ${percente}%`)
+                    });
+                    
+                    YD.on("error", async (error) => {
+                        console.log(`ERRO AO BAIXAR VIDEO ===> ${JSON.stringify(error)}`);
+                        await client.reply(from, `Porra bicho, não estou conseguindo baixar, tenta de novo...`, id)
+                    });
+
+                } catch (error) {
+                    await client.reply(from, `Porra bicho, deu merda... tenta de novo. \n\n${JSON.stringify(error)}`, id)
+                }
+
+                break
+            
+            case '!cep':
+
+                if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o cep?', id)
+
+                let response = await axios.get(`https://viacep.com.br/ws/${args[1]}/json/pt/`)
+                const { logradouro, bairro, localidade, siafi, ibge } = response.data
+
+                await client.reply(from, 'Buscando o CEP... pera um pouco', id)
+                await client.sendText(from, `🌎️ Rua: ${logradouro}, ${bairro}, ${localidade}\nSiafi: ${siafi}, Ibge: ${ibge} `)
+
+                break
+
+            case '!horoscopo':
+            case '!horóscopo':
+
+                if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o horoscopo?', id)
+                await client.reply(from, 'Buscando o horoscopo... pera um pouco', id)
+
+                let horoscopo = await axios.get(`https://horoscopefree.herokuapp.com/daily/pt/`)
+                const { publish, language, aries, taurus, gemini, cancer, leo, scorpio, libra, sagittarius, capricorn, aquarius, pisces } = horoscopo.data
+                switch(args[1]){
+                    case 'aries':
+                        await client.sendText(from, `${aries}`)
+                    break
+                    case 'touro':
+                        await client.sendText(from, `${taurus}`)
+                    break
+                    case 'gemios':
+                    case 'gêmios':
+                        await client.sendText(from, `${gemini}`)
+                    break
+                    case 'cancer':
+                    case 'câncer':
+                        await client.sendText(from, `${cancer}`)
+                    break
+                    case 'leao':
+                    case 'leão':
+                        await client.sendText(from, `${leo}`)
+                    break
+                    case 'escorpiao':
+                    case 'escorpião':
+                        await client.sendText(from, `${scorpio}`)
+                    break
+                    case 'libra':
+                        await client.sendText(from, `${libra}`)
+                    break
+                    case 'sagitario':
+                        await client.sendText(from, `${sagittarius}`)
+                    break
+                    case 'capricornio':
+                        await client.sendText(from, `${capricorn}`)
+                    break
+                    case 'aquario':
+                        await client.sendText(from, `${aquarius}`)
+                    break
+                    case 'peixes':
+                        await client.sendText(from, `${pisces}`)
+                    break
+                    default:
+                        await client.sendText(from, `Não encontrei nada...`)
+                }
+                break
+
+            case '!limpeza':
+
+                    if (!isGroupMsg) return client.reply(from, 'Este comando só pode ser usado em grupos!', id)
+                    if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado pelo grupo Admin!', id)
+
+                    await client.reply(from, `Buscando informações... pera ai`, id)
+                    const membros = await client.getGroupMembers(groupId)
+                    const grupo = await client.getGroupInfo(groupId)
+
+                    myArray = []
+                    texto = ""
+                    membros.forEach( async(data, index) => {
+                        myArray.push({id: data?.id,
+                        name: data?.name,
+                        shortName: data?.shortName,
+                        formattedName: data?.formattedName,
+                        isMe: data?.isMe,
+                        isMyContact: data?.isMyContact,
+                        isPSA: data?.isPSA,
+                        isUser: data?.isUser,
+                        isWAContact: data?.isWAContact,})
+
+                        let numero = data?.id.split('@');
+                        texto  += `\n*Número*: ${numero[0]}\n*É corporativo?* ${data?.isBusiness ? 'Sim' : 'Não'}\n-------------`
+                    });
+
+                    let blocks = await client.getBlockedIds(id);
+
+                    await client.reply(from, `-------------\n*Grupo:* ${grupo?.title}\n*Bloqueados:* ${blocks.length || '0'}\n-------------\n${texto}`, id)
+
+                break
+
+            case '!buscamemes':
             case '!buscameme':
     
-                await client.reply(from, `Vasculhando a internet... pera um pouco`, id)
+                await client.reply(from, `🌎️ Vasculhando a internet... pera um pouco`, id)
     
                 let meme = await axios.get(`https://api.imgflip.com/get_memes`)
     
@@ -445,7 +526,7 @@ module.exports = msgHandler = async (client, message) => {
                     if(clima?.data?.cod == '404') return  await client.reply(from, `Uai... ${clima?.data?.message}`, id)
     
                     await client.sendText(from, `*Temperatura:* ${clima?.data?.main?.temp} ºC \n*Sensação térmica:* ${clima?.data?.main?.feels_like} ºC \n*Temperatura mínima:* ${clima?.data?.main?.temp_min} ºC \n*Temperatura máxima:* ${clima?.data?.main?.temp_max} ºC \n*Pressão atmosférica:* ${clima?.data?.main?.pressure}\n*Umidade:* ${clima?.data?.main?.humidity}%
-    ----------------------\n${clima?.data?.name} - lat: ${clima?.data?.coord?.lat} lon: ${clima?.data?.coord?.lon}
+----------------------\n${clima?.data?.name} - lat: ${clima?.data?.coord?.lat} lon: ${clima?.data?.coord?.lon}
                     `)
     
                 }else{
@@ -454,53 +535,6 @@ module.exports = msgHandler = async (client, message) => {
                 }
                     
                 break
-
-        case '!jogodavelha':
-
-            await client.reply(from, 'Eu ainda estou aprendendo isso, tem um preview...', id)
-
-            let play1 = from
-            console.log(`PLAY 1 ===>`, play1)
-
-            if (mentionedJidList.length === 0) return client.reply(from, 'Para usar este comando, envie o comando *!jogarjogovelha* @tagmember', id)
-            for (let i = 0; i < mentionedJidList.length; i++) {
-                //if (groupAdmins.includes(mentionedJidList[i])) return client.reply(from, mess.error.Ki, id)
-
-                console.log(`PLAY ${i} ===>`, mentionedJidList[i])
-                play2 = mentionedJidList[i]
-            }
-
-            //let play2 = play2
-
-            switch (command) {
-                case 'X':
-                    _1 = 'X';
-                    break;
-                case 'O':
-                    _1 = 'X';
-                    _9 = 'X';
-                    break;
-
-                case '1':
-                    _1 = 'X';
-                    _2 = 'X';
-                    _3 = 'X';
-                    _4 = 'X';
-                    _5 = 'X';
-                    _6 = 'X';
-                    _7 = 'X';
-                    _8 = 'X';
-                    _9 = 'X';
-                    break;
-            }
-            
-            //await client.reply(from, 'Ah, então vamos jogar jogo da velha? bora começar...', id)
-            await client.sendText(from, `1 2 3\n4 5 6\n7 8 9`)
-            await client.sendText(from, ` *${play1}* x *${play2}*\nPor quem vamos começar?`)
-
-            await client.reply(from, 'Isso é tudo..', id)
-
-            break
 
         case '!meunumero':
 
@@ -686,13 +720,14 @@ module.exports = msgHandler = async (client, message) => {
             if (!isBotGroupAdmins) return client.reply(from, 'Este comando só pode ser usado quando o bot se torna administrador', id)
             
             if (mentionedJidList.length === 0) return client.reply(from, 'Para usar este comando, envie o comando *!ban* @tagmember', id)
-            await client.sendText(from, `Pronto! removido \n${mentionedJidList.join('\n')}`)
+            await client.sendText(from, `Pronto! removido e bloqueado \n${mentionedJidList.join('\n')}`)
             
             for (let i = 0; i < mentionedJidList.length; i++) {
                 if (groupAdmins.includes(mentionedJidList[i])) return client.reply(from, mess.error.Ki, id)
 
-                console.log("BANIDO ===>", mentionedJidList[i])
+                await client.contactBlock(mentionedJidList[i]);
                 await client.removeParticipant(groupId, mentionedJidList[i])
+
             }
             break
 

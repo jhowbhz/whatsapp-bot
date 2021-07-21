@@ -24,6 +24,7 @@
     "google-tts-api": "^2.0.2",
     "got": "^11.7.0",
     "imagemagick": "^0.1.3",
+    "imagemin-webp": "^6.0.0",
     "moment-timezone": "^0.5.31",
     "needle": "^2.5.2",
     "nhentai-api": "^3.0.2",
