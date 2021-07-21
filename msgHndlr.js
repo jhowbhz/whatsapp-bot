@@ -417,6 +417,7 @@ module.exports = msgHandler = async (client, message) => {
                         await client.sendText(from, `${capricorn}`)
                     break
                     case 'aquario':
+                    case 'aquário':
                         await client.sendText(from, `${aquarius}`)
                     break
                     case 'peixes':
