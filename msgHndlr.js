@@ -666,7 +666,6 @@ module.exports = msgHandler = async (client, message) => {
                 )
             }
             break
-
         case '!modoadm':
         case '!autoadm':
             if (!isGroupMsg) return client.reply(from, 'Este comando só pode ser usado em grupos!', id)
