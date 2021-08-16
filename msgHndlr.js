@@ -107,7 +107,7 @@ module.exports = msgHandler = async (client, message) => {
 					oneLink = 1; const gplka = await kill.inviteInfo(chats)
 					if (gplka) {
 						console.log(color('[BAN]', 'red'), color('Link de grupo detectado, removendo participante...', 'yellow'))
-						await kill.removeParticipant(groupId, user).then(async () => { await kill.sendTextWithMentions(from, mess.baninjusto(user) + 'WhatsApp Link.');return oneLink = 0 })
+						await client.removeParticipant(groupId, id).then(async () => { await client.sendTextWithMentions(from, mess.baninjusto(user) + 'WhatsApp Link.');return oneLink = 0 })
 					} else { console.log(color('[ALERTA]', 'yellow'), color('Link de grupo invalido recebido...', 'yellow'));oneLink = 0 }
 				}
 			} catch (error) { return oneLink = 0 }
