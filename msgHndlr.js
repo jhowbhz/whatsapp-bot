@@ -340,7 +340,7 @@ module.exports = msgHandler = async (client, message) => {
 
             let numeroTracker = body.split('.');
 
-            if(typeof(numeroTracker[1]) === undefined) {
+            if(typeof(numeroTracker[1]) == 'undefined') {
                 return await client.reply(from, `Coloca um . antes do número`, id)
             }
 
