@@ -674,7 +674,7 @@ module.exports = msgHandler = async (client, message) => {
 
                     }); */
 
-                    await client.sendMp4AsSticker(from, `data:${mimetype};base64,${mediaData.toString('base64')}`, null,  {stickerMetadata: true, author: "Bot do JhowJhoe", pack: "PackDoBot", fps: 10, keepScale: true, crop: 'center', loop: 0 })
+                    await client.sendMp4AsSticker(from, `data:${mimetype};base64,${mediaData.toString('base64')}`, null,  {stickerMetadata: true, author: "Bot do JhowJhoe", pack: "PackDoBot", fps: 10, keepScale: true, crop: 'centre', loop: 0 })
 
                 } else (
                     client.reply(from, 'Envie o gif com a legenda *!sg* máx. 30 segundos!', id)
