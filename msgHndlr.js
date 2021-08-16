@@ -655,7 +655,7 @@ module.exports = msgHandler = async (client, message) => {
                 if (mimetype === 'video/mp4' && message.duration < 30 || mimetype === 'image/gif' && message.duration < 30) {
                     const mediaData = await decryptMedia(message, uaOverride)
                     client.reply(from, 'Já to fazendo a figurinha...', id)
-                    const filename = `./media/aswu.${mimetype.split('/')[1]}`
+                    /* const filename = `./media/aswu.${mimetype.split('/')[1]}`
                     await fs.writeFileSync(filename, mediaData)
 
                     let opts = {
@@ -671,9 +671,10 @@ module.exports = msgHandler = async (client, message) => {
                         };
                             
                         const gif = await fs.readFileSync('./media/output.gif', { encoding: "base64" })
-                        await client.sendMp4AsSticker(from, `data:image/gif;base64,${gif.toString('base64')}`,  { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true } , { author: "Bot do JhowJhoe", pack: "PackDoBot", fps: 10, crop: false, loop: 0 })
 
-                    });
+                    }); */
+
+                    await client.sendMp4AsSticker(from, `data:${mimetype};base64,${mediaData.toString('base64')}`, null,  {stickerMetadata: true, author: "Bot do JhowJhoe", pack: "PackDoBot", fps: 10, crop: false, loop: 0 })
 
                 } else (
                     client.reply(from, 'Envie o gif com a legenda *!sg* máx. 30 segundos!', id)
