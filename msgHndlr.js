@@ -91,7 +91,7 @@ module.exports = msgHandler = async (client, message) => {
         if( falas.indexOf("chuck") != -1 ){
             await client.reply(from, 'Oi? ta falando de mim? é só digitar: *me ajuda*', id)
             const gif4 = await fs.readFileSync('./media/pensando.webp', { encoding: "base64" })
-            await client.sendImageAsSticker(from, `data:image/gif;base64,${gif4.toString('base64')}`, { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true } )
+            await client.sendImageAsSticker(from, `data:image/gif;base64,${gif4.toString('base64')}`)
         }
 
         if( (falas.indexOf("https://") != -1) || (falas.indexOf("http://") != -1) || (falas.indexOf("vendas") != -1) || (falas.indexOf("venda mais") != -1) || (falas.indexOf("cartao credito") != -1) || (falas.indexOf("nota falsa") != -1) ){
@@ -167,7 +167,7 @@ module.exports = msgHandler = async (client, message) => {
             case 'sextôu':
                 await client.reply(from, 'ôpa, bora??', id)
                 const gif1 = await fs.readFileSync('./media/sexto.webp', { encoding: "base64" })
-                await client.sendImageAsSticker(from, `data:image/gif;base64,${gif1.toString('base64')}`, { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true } )
+                await client.sendImageAsSticker(from, `data:image/gif;base64,${gif1.toString('base64')}`)
                 break
                     
             case 'bot gay':
@@ -189,13 +189,13 @@ module.exports = msgHandler = async (client, message) => {
                 
                 await client.reply(from, 'É pra esculachar?...', id)
                 const gif2 = await fs.readFileSync('./media/xingping.webp', { encoding: "base64" })
-                await client.sendImageAsSticker(from, `data:image/gif;base64,${gif2.toString('base64')}`, { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true } )
+                await client.sendImageAsSticker(from, `data:image/gif;base64,${gif2.toString('base64')}`)
                 break
 
             case 'bom dia bot':
                 await client.reply(from, 'Bom dia? so se for pra você que dormiu a noite toda...', id)
                 const gif3 = await fs.readFileSync('./media/tudosobcontrole.webp', { encoding: "base64" })
-                await client.sendImageAsSticker(from, `data:image/gif;base64,${gif3.toString('base64')}`, { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true } )
+                await client.sendImageAsSticker(from, `data:image/gif;base64,${gif3.toString('base64')}`)
                 break
     
             case 'boa tarde bot':
@@ -628,12 +628,12 @@ module.exports = msgHandler = async (client, message) => {
         case '!s':
             if (isMedia && type === 'image') {
                 const mediaData = await decryptMedia(message, uaOverride)
-                const imageBase64 = `data:${mimetype};base64,${mediaData.toString('base64')}` 
-                await client.sendImageAsSticker(from, imageBase64)
+                const imageBase64 = `data:${mimetype};base64,${mediaData.toString('base64')}`
+                await client.sendImageAsSticker(from, imageBase64, { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true } , { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true })
             } else if (quotedMsg && quotedMsg.type == 'image') {
                 const mediaData = await decryptMedia(quotedMsg, uaOverride)
-                const imageBase64 = `data:${quotedMsg.mimetype};base64,${mediaData.toString('base64')}` 
-                await client.sendImageAsSticker(from, imageBase64)
+                const imageBase64 = `data:${quotedMsg.mimetype};base64,${mediaData.toString('base64')}`
+                await client.sendImageAsSticker(from, imageBase64, { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true } , { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true })
             } else if (args.length === 2) {
                 const url = args[1]
                 if (url.match(isUrl)) {
@@ -671,7 +671,7 @@ module.exports = msgHandler = async (client, message) => {
                         };
                             
                         const gif = await fs.readFileSync('./media/output.gif', { encoding: "base64" })
-                        await client.sendImageAsSticker(from, `data:image/gif;base64,${gif.toString('base64')}`, { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true } , { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true } )
+                        await client.sendImageAsSticker(from, `data:image/gif;base64,${gif.toString('base64')}`,  { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true } , { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true })
                         
                     });
 
