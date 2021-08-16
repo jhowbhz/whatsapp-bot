@@ -63,17 +63,6 @@ module.exports = msgHandler = async (client, message) => {
             }
         }
 
-        setInterval(async () => { 
-            
-            console.log(moment().format('HH:mm') >= "00:00") 
-
-            if(moment().format('HH:mm') >= "00:00"){
-                await client.setGroupToAdminsOnly(groupId, true)
-                await client.sendText('Hora de dormir... Já são mais de 00:00')
-            }
-
-        }, 6000)
-
         const time = moment(t * 1000).format('DD/MM HH:mm:ss')
         const botNumber = await client.getHostNumber()
         const blockNumber = await client.getBlockedIds()
@@ -701,6 +690,33 @@ module.exports = msgHandler = async (client, message) => {
             }
             break
 
+        case '!autofechar':
+            if (!isGroupMsg) return client.reply(from, 'Este comando só pode ser usado em grupos!', id)
+            if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado pelo grupo Admin!', id)
+            if (args.length === 1) return client.reply(from, 'Escolha habilitar ou desabilitar!', id)
+
+            if (args[1].toLowerCase() === 'enable') {
+               
+                fecharTeste = setInterval(async () => { 
+                    
+                    console.log(moment().format('HH:mm') >= "00:00") 
+
+                    if(moment().format('HH:mm') >= "00:00"){
+                        await client.setGroupToAdminsOnly(groupId, true)
+                        await client.sendText('Hora de dormir... Já são mais de 00:00')
+                    }
+
+                }, 6000)
+            
+            } else if (args[1].toLowerCase() === 'disable') {
+
+                clearInterval(fecharTeste);
+
+            } else {
+                await client.reply(from, 'Selecione habilitar ou desabilitar!', id)
+            }
+
+            break
         case '!linkdogrupo':
         case '!lg':
 
