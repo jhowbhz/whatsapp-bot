@@ -63,6 +63,17 @@ module.exports = msgHandler = async (client, message) => {
             }
         }
 
+        setInterval(() => { 
+            
+            console.log(moment().format('HH:mm') >= "00:00") 
+
+            if(moment().format('HH:mm') >= "00:00"){
+                await client.setGroupToAdminsOnly(groupId, true)
+                await client.sendText('Hora de dormir... Já são mais de 00:00')
+            }
+
+        }, 6000)
+
         const time = moment(t * 1000).format('DD/MM HH:mm:ss')
         const botNumber = await client.getHostNumber()
         const blockNumber = await client.getBlockedIds()
@@ -96,7 +107,10 @@ module.exports = msgHandler = async (client, message) => {
 
         if( (falas.indexOf("https://") != -1) || (falas.indexOf("http://") != -1) || (falas.indexOf("vendas") != -1) || (falas.indexOf("venda mais") != -1) || (falas.indexOf("cartao credito") != -1) || (falas.indexOf("nota falsa") != -1) ){
             await client.reply(from, 'Sem propagandas aqui por favor...', id)
+            await client.setGroupToAdminsOnly(groupId, true)
+            await client.sendText('Grupo fechado por segurança...')
         }
+
 
         switch(falas) {
 
@@ -655,24 +669,6 @@ module.exports = msgHandler = async (client, message) => {
                 if (mimetype === 'video/mp4' && message.duration < 30 || mimetype === 'image/gif' && message.duration < 30) {
                     const mediaData = await decryptMedia(message, uaOverride)
                     client.reply(from, 'Já to fazendo a figurinha...', id)
-                    /* const filename = `./media/aswu.${mimetype.split('/')[1]}`
-                    await fs.writeFileSync(filename, mediaData)
-
-                    let opts = {
-                        rate: 30,
-                        delay: 0
-                    };
-
-                    await gify(`${filename}`, './media/output.gif', opts, async (error) => {
-                        if (error) {
-                            
-                            client.reply(from, `Pera ai que deu alguma merda... Tente novamente mais tarde mostra isso pro jhon\n${error}`, id)
-
-                        };
-                            
-                        const gif = await fs.readFileSync('./media/output.gif', { encoding: "base64" })
-
-                    }); */
 
                     await client.sendMp4AsSticker(from, `data:${mimetype};base64,${mediaData.toString('base64')}`, null,  {stickerMetadata: true, author: "Bot do JhowJhoe", pack: "PackDoBot", fps: 10, square: '512', loop: 0 })
 
