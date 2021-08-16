@@ -671,7 +671,7 @@ module.exports = msgHandler = async (client, message) => {
         case '!autoadm':
             if (!isGroupMsg) return client.reply(from, 'Este comando só pode ser usado em grupos!', id)
             if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado pelo grupo Admin!', id)
-            if (args.length === 1) return client.reply(from, 'Escolha habilitar ou desabilitar!', id)
+            if (args.length === 1) return client.reply(from, 'Escolha enable ou disable!', id)
 
             if (args[1].toLowerCase() === 'enable') {
 
@@ -686,30 +686,29 @@ module.exports = msgHandler = async (client, message) => {
                 await client.reply(from, 'O recurso de auto-adm foi desabilitado com sucesso neste grupo!', id)
 
             } else {
-                await client.reply(from, 'Selecione habilitar ou desabilitar!', id)
+                await client.reply(from, 'Selecione enable ou disable!', id)
             }
             break
 
         case '!autofechar':
             if (!isGroupMsg) return client.reply(from, 'Este comando só pode ser usado em grupos!', id)
             if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado pelo grupo Admin!', id)
-            if (args.length === 1) return client.reply(from, 'Escolha habilitar ou desabilitar!', id)
+            if (args.length === 1) return client.reply(from, 'Escolha enable ou disable!', id)
 
             if (args[1].toLowerCase() === 'enable') {
                
                 fecharTeste = setInterval(async () => { 
                     
-                    console.log(moment().format('HH:mm') >= "00:00") 
-
                     if(moment().format('HH:mm') >= "00:00"){
+                        await client.reply(from, `Modo fechar grupo automaticamente ligado já são: ${moment().format('HH:mm')}`, id)
                         await client.setGroupToAdminsOnly(groupId, true)
-                        await client.sendText('Hora de dormir... Já são mais de 00:00')
                     }
 
                 }, 6000)
             
             } else if (args[1].toLowerCase() === 'disable') {
 
+                await client.reply(from, 'Modo fechar grupo automaticamente desligado', id)
                 clearInterval(fecharTeste);
 
             } else {
