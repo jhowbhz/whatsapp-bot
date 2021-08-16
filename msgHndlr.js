@@ -699,7 +699,7 @@ module.exports = msgHandler = async (client, message) => {
                
                 fecharTeste = setInterval(async () => { 
                     
-                    if(moment().format('HH:mm') >= "00:00"){
+                    if(moment().format('HH:mm') == "00:00"){
                         await client.setGroupToAdminsOnly(groupId, true)
                     }else if(moment().format('HH:mm') >= "00:50"){
                         await client.setGroupToAdminsOnly(groupId, false)
