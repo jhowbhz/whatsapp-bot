@@ -16,6 +16,7 @@ const gify = require('gify')
 const YoutubeMp3Downloader = require("youtube-mp3-downloader");
 const YTsearch = require('youtube-search');
 const googleTTS = require('google-tts-api'); // CommonJS
+const functions = JSON.parse(fs.readFileSync('./lib/config/Gerais/functions.json'))
 
 //const dialogflow = require('@google-cloud/dialogflow');
 const uuid = require('uuid');
@@ -81,6 +82,7 @@ module.exports = msgHandler = async (client, message) => {
         if (isGroupMsg && !command.startsWith('!')) console.log('\x1b[1;33m~\x1b[1;37m>', '[\x1b[1;31mMSG\x1b[1;37m]', time, color(body), 'from', color(pushname), 'in', color(formattedTitle))
         if (isBlocked) return
         //if (!isOwner) return
+        const isAntiLink = isGroupMsg ? functions[0].antilinks.includes(groupId) : false
 
         console.log('FROM ===>', color(pushname))
         console.log('ARGUMENTOS ===>', color(args))
@@ -97,6 +99,19 @@ module.exports = msgHandler = async (client, message) => {
         if( (falas.indexOf("https://") != -1) || (falas.indexOf("http://") != -1) || (falas.indexOf("vendas") != -1) || (falas.indexOf("venda mais") != -1) || (falas.indexOf("cartao credito") != -1) || (falas.indexOf("nota falsa") != -1) ){
             await client.reply(from, 'Sem propagandas aqui por favor...', id)
         }
+
+        // Anti links de grupo
+		if (isGroupMsg && !isGroupAdmins && isBotGroupAdmins && isAntiLink && !isOwner && oneLink == 0 && !isBot) {
+			try {
+				if (chats.match(new RegExp(/(https:\/\/chat.whatsapp.com)/gi))) {
+					oneLink = 1; const gplka = await kill.inviteInfo(chats)
+					if (gplka) {
+						console.log(color('[BAN]', 'red'), color('Link de grupo detectado, removendo participante...', 'yellow'))
+						await kill.removeParticipant(groupId, user).then(async () => { await kill.sendTextWithMentions(from, mess.baninjusto(user) + 'WhatsApp Link.');return oneLink = 0 })
+					} else { console.log(color('[ALERTA]', 'yellow'), color('Link de grupo invalido recebido...', 'yellow'));oneLink = 0 }
+				}
+			} catch (error) { return oneLink = 0 }
+		}
 
         switch(falas) {
 
