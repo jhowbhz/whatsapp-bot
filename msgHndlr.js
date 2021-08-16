@@ -16,7 +16,6 @@ const gify = require('gify')
 const YoutubeMp3Downloader = require("youtube-mp3-downloader");
 const YTsearch = require('youtube-search');
 const googleTTS = require('google-tts-api'); // CommonJS
-const functions = JSON.parse(fs.readFileSync('./lib/config/Gerais/functions.json'))
 
 //const dialogflow = require('@google-cloud/dialogflow');
 const uuid = require('uuid');
@@ -82,7 +81,6 @@ module.exports = msgHandler = async (client, message) => {
         if (isGroupMsg && !command.startsWith('!')) console.log('\x1b[1;33m~\x1b[1;37m>', '[\x1b[1;31mMSG\x1b[1;37m]', time, color(body), 'from', color(pushname), 'in', color(formattedTitle))
         if (isBlocked) return
         //if (!isOwner) return
-        const isAntiLink = isGroupMsg ? functions[0].antilinks.includes(groupId) : false
 
         console.log('FROM ===>', color(pushname))
         console.log('ARGUMENTOS ===>', color(args))
@@ -93,25 +91,12 @@ module.exports = msgHandler = async (client, message) => {
         if( falas.indexOf("chuck") != -1 ){
             await client.reply(from, 'Oi? ta falando de mim? é só digitar: *me ajuda*', id)
             const gif4 = await fs.readFileSync('./media/pensando.webp', { encoding: "base64" })
-            await client.sendImageAsSticker(from, `data:image/gif;base64,${gif4.toString('base64')}`)
+            await client.sendImageAsSticker(from, `data:image/gif;base64,${gif4.toString('base64')}`, { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true } )
         }
 
         if( (falas.indexOf("https://") != -1) || (falas.indexOf("http://") != -1) || (falas.indexOf("vendas") != -1) || (falas.indexOf("venda mais") != -1) || (falas.indexOf("cartao credito") != -1) || (falas.indexOf("nota falsa") != -1) ){
             await client.reply(from, 'Sem propagandas aqui por favor...', id)
         }
-
-        // Anti links de grupo
-		if (isGroupMsg && !isGroupAdmins && isBotGroupAdmins && isAntiLink && !isOwner && oneLink == 0 && !isBot) {
-			try {
-				if (chats.match(new RegExp(/(https:\/\/chat.whatsapp.com)/gi))) {
-					oneLink = 1; const gplka = await kill.inviteInfo(chats)
-					if (gplka) {
-						console.log(color('[BAN]', 'red'), color('Link de grupo detectado, removendo participante...', 'yellow'))
-						await client.removeParticipant(groupId, id).then(async () => { await client.sendTextWithMentions(from, mess.baninjusto(user) + 'WhatsApp Link.');return oneLink = 0 })
-					} else { console.log(color('[ALERTA]', 'yellow'), color('Link de grupo invalido recebido...', 'yellow'));oneLink = 0 }
-				}
-			} catch (error) { return oneLink = 0 }
-		}
 
         switch(falas) {
 
@@ -182,7 +167,7 @@ module.exports = msgHandler = async (client, message) => {
             case 'sextôu':
                 await client.reply(from, 'ôpa, bora??', id)
                 const gif1 = await fs.readFileSync('./media/sexto.webp', { encoding: "base64" })
-                await client.sendImageAsSticker(from, `data:image/gif;base64,${gif1.toString('base64')}`)
+                await client.sendImageAsSticker(from, `data:image/gif;base64,${gif1.toString('base64')}`, { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true } )
                 break
                     
             case 'bot gay':
@@ -204,13 +189,13 @@ module.exports = msgHandler = async (client, message) => {
                 
                 await client.reply(from, 'É pra esculachar?...', id)
                 const gif2 = await fs.readFileSync('./media/xingping.webp', { encoding: "base64" })
-                await client.sendImageAsSticker(from, `data:image/gif;base64,${gif2.toString('base64')}`)
+                await client.sendImageAsSticker(from, `data:image/gif;base64,${gif2.toString('base64')}`, { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true } )
                 break
 
             case 'bom dia bot':
                 await client.reply(from, 'Bom dia? so se for pra você que dormiu a noite toda...', id)
                 const gif3 = await fs.readFileSync('./media/tudosobcontrole.webp', { encoding: "base64" })
-                await client.sendImageAsSticker(from, `data:image/gif;base64,${gif3.toString('base64')}`)
+                await client.sendImageAsSticker(from, `data:image/gif;base64,${gif3.toString('base64')}`, { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true } )
                 break
     
             case 'boa tarde bot':
@@ -643,11 +628,11 @@ module.exports = msgHandler = async (client, message) => {
         case '!s':
             if (isMedia && type === 'image') {
                 const mediaData = await decryptMedia(message, uaOverride)
-                const imageBase64 = `data:${mimetype};base64,${mediaData.toString('base64')}`
+                const imageBase64 = `data:${mimetype};base64,${mediaData.toString('base64')}` 
                 await client.sendImageAsSticker(from, imageBase64)
             } else if (quotedMsg && quotedMsg.type == 'image') {
                 const mediaData = await decryptMedia(quotedMsg, uaOverride)
-                const imageBase64 = `data:${quotedMsg.mimetype};base64,${mediaData.toString('base64')}`
+                const imageBase64 = `data:${quotedMsg.mimetype};base64,${mediaData.toString('base64')}` 
                 await client.sendImageAsSticker(from, imageBase64)
             } else if (args.length === 2) {
                 const url = args[1]
@@ -686,7 +671,7 @@ module.exports = msgHandler = async (client, message) => {
                         };
                             
                         const gif = await fs.readFileSync('./media/output.gif', { encoding: "base64" })
-                        await client.sendImageAsSticker(from, `data:image/gif;base64,${gif.toString('base64')}`)
+                        await client.sendImageAsSticker(from, `data:image/gif;base64,${gif.toString('base64')}`, { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true } , { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true } )
                         
                     });
 
