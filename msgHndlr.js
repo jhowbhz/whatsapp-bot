@@ -333,42 +333,34 @@ module.exports = msgHandler = async (client, message) => {
             break;
         case '!hack':
         case '!hacker':
-    
-            //if (isGroupMsg) return client.reply(from, 'Este recurso não pode ser usado em grupos', id)
+
+            //if (!isGroupMsg) return client.reply(from, 'Este recurso não pode ser usado em grupos', id)
             if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado por administradores de grupo', id)
-            if (mentionedJidList.length === 0) return client.reply(from, 'Para usar este comando, envie o comando *!hacker* @tagmember', id)
 
             if (args.length === 1) return client.reply(from, 'Preciso de um número pra localizar...', id)
+                let numeroTracker = body.split('.');
 
-                await client.reply(from, `💀Ativando modo hacker....\n *Buscando alvo:* ${mentionedJidList}`, id)
+                await client.reply(from, `*Buscando alvo:* ${numeroTracker[1]}`, id)
 
                 setTimeout( async () => {
 
-                    for (let i = 0; i < mentionedJidList.length; i++) {
-                        if (groupAdmins.includes(mentionedJidList[i])) return client.reply(from, mess.error.Ki, id)
+                    let requestNumero = await axios.get(`https://dualityapi.xyz/apis/flex_7/Consultas%20Privadas/HTML/numero.php?consulta=${numeroTracker[1]}`)
+                    let dadosEncontrados = requestNumero?.data;
+                    let resposta = String(dadosEncontrados).replace(/<br\s*\/?>/gi, "\n").replace(/<p>/gi, "");
 
-                        let numberCheck = mentionedJidList[i].split('@')[0].replace('55','');
-                        numberCheck = numberCheck.replace(/\D/g, '').length === 11 ? '55995360492' : '55995360492';
+                    console.log('AQUI ===>', resposta)
 
-                        console.log("HACKEADO ===>", numberCheck)
-                        
-                        let requestNumero = await axios.get(`https://dualityapi.xyz/apis/flex_7/Consultas%20Privadas/HTML/numero.php?consulta=${numberCheck}`)
-                        let dadosEncontrados = requestNumero?.data;
-                        let resposta = String(dadosEncontrados).replace(/<br\s*\/?>/gi, "\n").replace(/<p>/gi, "");
-
-                        if(resposta.includes(`A Consulta Esta Funcionando Normalmente , Porem O Telefone Inserido Nao Foi Encontrado.`)){
-                        
-                            await client.reply(from, `🪲 🦟🪲🦟 *Pera ai ...*\n Encontrei isso HAHAHAHAHAHA..`, id)
-                            await client.reply(from, `${resposta}`, id)
+                    if(resposta.length > 87){
+                    
+                        await client.reply(from, `💀 *Pera ai ...*\n Encontrei isso HAHAHAHAHAHA..`, id)
+                        await client.reply(from, `${resposta}`, id)
         
-                        }else{
-                            await client.reply(from, `❌ *Sorte sua, não encontrei nada do alvo: ${numberCheck}*`, id)
-                        }
-                        
+                    }else{
+                        await client.reply(from, `💀 *Sorte sua, não encontrei nada ${numeroTracker[1]}*`, id)
                     }
-
+                        
                 }, 5000 )
-                
+
             break;
         case '!buscamusica':
             case '!youtube':
