@@ -697,24 +697,16 @@ module.exports = msgHandler = async (client, message) => {
 
             if (args[1].toLowerCase() === 'enable') {
                
-                await client.reply(from, `Modo fechar grupo automaticamente ligado já são: ${moment().format('HH:mm')}`, id)
-
                 fecharTeste = setInterval(async () => { 
                     
                     if(moment().format('HH:mm') >= "00:00"){
                         await client.setGroupToAdminsOnly(groupId, true)
                     }
 
-                    if(moment().format('HH:mm') == "00:50"){
-                        await client.setGroupToAdminsOnly(groupId, false)
-                        await client.sendText(from, `Bom dia galera...`)
-                    }
-
                 }, 6000)
             
             } else if (args[1].toLowerCase() === 'disable') {
 
-                await client.reply(from, 'Modo fechar grupo automaticamente desligado', id)
                 clearInterval(fecharTeste);
 
             } else {
