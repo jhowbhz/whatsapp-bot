@@ -671,8 +671,8 @@ module.exports = msgHandler = async (client, message) => {
                         };
                             
                         const gif = await fs.readFileSync('./media/output.gif', { encoding: "base64" })
-                        await client.sendImageAsSticker(from, `data:image/gif;base64,${gif.toString('base64')}`,  { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true } , { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true })
-                        
+                        await client.sendMp4AsSticker(from, `data:image/gif;base64,${gif.toString('base64')}`,  { author: "Bot do JhowJhoe", pack: "PackDoBot", keepScale: true } , { author: "Bot do JhowJhoe", pack: "PackDoBot", fps: 10, crop: false, loop: 0 })
+
                     });
 
                 } else (
