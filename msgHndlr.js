@@ -701,6 +701,8 @@ module.exports = msgHandler = async (client, message) => {
                     
                     if(moment().format('HH:mm') >= "00:00"){
                         await client.setGroupToAdminsOnly(groupId, true)
+                    }else if(moment().format('HH:mm') >= "00:50"){
+                        await client.setGroupToAdminsOnly(groupId, false)
                     }
 
                 }, 6000)
