@@ -63,7 +63,7 @@ module.exports = msgHandler = async (client, message) => {
             }
         }
 
-        setInterval(() => { 
+        setInterval(async () => { 
             
             console.log(moment().format('HH:mm') >= "00:00") 
 
