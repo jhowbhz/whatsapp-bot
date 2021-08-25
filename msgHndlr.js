@@ -142,12 +142,6 @@ module.exports = msgHandler = async (client, message) => {
                 client.sendText(from, 'Esse comando foi desativado!', id)
             break
 
-            case 'kkkkkkk':
-            case 'kakaka':
-            case 'risada':
-                await client.sendFile(from, './media/risada.mp3', 'Risada', 'AAAAAAAAAUHHH', id)
-            break
-
             case 'oi sumida':
             case 'oi ta sumida':
             case 'oi sua sumida':
@@ -161,7 +155,9 @@ module.exports = msgHandler = async (client, message) => {
                 let randomNumber1 = Math.floor(Math.random()*songsArray1.length);
                 let escolhido1 = songsArray1[randomNumber1];
 
-                await client.sendFile(from, escolhido1, '', 'AAAAAAAAAUHHH', id)
+                await client.sendText(from, 'Esse comando foi desativado!', id)
+
+                //await client.sendFile(from, escolhido1, '', 'AAAAAAAAAUHHH', id)
             break
 
             case 'sexto':
