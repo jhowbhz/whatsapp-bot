@@ -156,7 +156,6 @@ module.exports = msgHandler = async (client, message) => {
                 let escolhido1 = songsArray1[randomNumber1];
 
                 await client.sendText(from, 'Esse comando foi desativado!', id)
-
                 //await client.sendFile(from, escolhido1, '', 'AAAAAAAAAUHHH', id)
             break
 
@@ -317,7 +316,6 @@ module.exports = msgHandler = async (client, message) => {
 
                 encontrado = ``
                 quantidade = 0;
-                console.log(concursos)
                 
                 concursos.forEach( async(data) => {
                     if( String(data?.estado.toLowerCase()) == String(cidadeConcurso[1].toLowerCase()) ) {
@@ -330,280 +328,245 @@ module.exports = msgHandler = async (client, message) => {
                 setTimeout(() => client.reply(from, `${encontrado}`, id) , 5000 )
 
             break;
-        case '!hack':
-        case '!hacker':
+        case '!buscamusica':
+        case '!youtube':
+        case '!bm':
+        case '!buscarmusica':
+            
+            if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o devo buscar?', id)
 
-            //if (!isGroupMsg) return client.reply(from, 'Este recurso não pode ser usado em grupos', id)
-            if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado por administradores de grupo', id)
-            if (args.length === 1) return client.reply(from, 'Preciso de um número pra localizar...', id)
+            let opts = { maxResults: 5, key: 'AIzaSyA53q1WJv1-6IqyCVjqHjlar7pWfKiTOtQ' };
+            
+            await YTsearch(args[1], opts, async (err, results) => {
+                if(err) return console.log(err);
+                let resultado = ``
+                teste = [];
+                results.forEach( async(data, index) => {
+                    teste[`${index}`] = `!yt youtu.be=${data?.id}`;
+                    resultado += `\n*Titulo*: ${data?.title}\n*Link*: https://youtu.be/${data?.id}\n*Baixe:* !yt youtu.be=${data?.id} *[ y${index} ]*\n---\n`;
+                });
+                await client.reply(from, `Achei isso aqui...\n${resultado}`, id)
+            });
 
-            let numeroTracker = body.split('.');
+            break
+        case '!bateria':
 
-            if(typeof(numeroTracker[1]) == 'undefined') {
-                return await client.reply(from, `Coloca um . antes do número`, id)
+            let level = await client.getBatteryLevel()
+            await client.reply(from, `----------------------\nNível de bateria é de: ${JSON.stringify(level)}%\n----------------------`, id)   
+    
+        case '!yt':
+        case '!baixarvideo':
+
+            if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o video sem o link?', id)
+
+            try {
+
+                const url = `${args[1]}`
+                const ID_VIDEO = url.split('=')[1];
+                console.log('URL DO VIDEO ====>', url)
+                console.log('ID DO VIDEO ====>', ID_VIDEO)
+
+                await client.reply(from, `Baixando e convertendo o video em mp3...`, id)
+                await YD.download(`${ID_VIDEO}`);
+
+                await YD.on("finished", async (err, data) => {
+                    await client.sendFile(from, data?.file, '', 'AAAAAAAAAUHHH', id)
+                    await client.reply(from, `_Ufa, eita trem pesado, mas ta na mão..._\n\n*Titulo*: ${data?.title}\n*Link*: https://youtu.be/${ID_VIDEO}\n-----\n*Transferidos*: ${Math.round(data?.stats?.transferredBytes) }kb \n*Velocidade média*: ${Math.round(data?.stats?.averageSpeed)}`, id)
+                });
+
+                YD.on("progress", async (progress) => {
+                    let percente = parseInt(progress?.progress?.percentage);
+                    console.log(`BAIXANDO O VIDEO ===> ${percente}%`)
+                });
+                
+                YD.on("error", async (error) => {
+                    console.log(`ERRO AO BAIXAR VIDEO ===> ${JSON.stringify(error)}`);
+                    await client.reply(from, `Porra bicho, não estou conseguindo baixar, tenta de novo...`, id)
+                });
+
+            } catch (error) {
+                await client.reply(from, `Porra bicho, deu merda... tenta de novo. \n\n${JSON.stringify(error)}`, id)
             }
 
-            await client.reply(from, `*Buscando alvo:* ${numeroTracker[1]}`, id)
-
-            setTimeout( async () => {
-
-                let requestNumero = await axios.get(`https://dualityapi.xyz/apis/flex_7/Consultas%20Privadas/HTML/numero.php?consulta=${numeroTracker[1]}`)
-                let dadosEncontrados = requestNumero?.data;
-                let resposta = String(dadosEncontrados).replace(/<br\s*\/?>/gi, "\n").replace(/<p>/gi, "");
-
-                console.log('AQUI ===>', resposta)
-
-                if(resposta.length > 87){
-                
-                    await client.reply(from, `💀 *Pera ai ...*\n Encontrei isso HAHAHAHAHAHA..`, id)
-                    await client.reply(from, `${resposta}`, id)
-    
-                }else{
-                    await client.reply(from, `💀 *Sorte sua, não encontrei nada ${numeroTracker[1]}*`, id)
-                }
-                    
-            }, 5000 )
-
-            break;
-        case '!buscamusica':
-            case '!youtube':
-            case '!bm':
-            case '!buscarmusica':
-                
-                if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o devo buscar?', id)
-
-                let opts = { maxResults: 5, key: 'AIzaSyA53q1WJv1-6IqyCVjqHjlar7pWfKiTOtQ' };
-                
-                await YTsearch(args[1], opts, async (err, results) => {
-                    if(err) return console.log(err);
-                    let resultado = ``
-                    teste = [];
-                    results.forEach( async(data, index) => {
-                        teste[`${index}`] = `!yt youtu.be=${data?.id}`;
-                        resultado += `\n*Titulo*: ${data?.title}\n*Link*: https://youtu.be/${data?.id}\n*Baixe:* !yt youtu.be=${data?.id} *[ y${index} ]*\n---\n`;
-                    });
-                    await client.reply(from, `Achei isso aqui...\n${resultado}`, id)
-                });
-
-                break
-            case '!bateria':
-
-                let level = await client.getBatteryLevel()
-                await client.reply(from, `----------------------\nNível de bateria é de: ${JSON.stringify(level)}%\n----------------------`, id)   
+            break
         
-            case '!yt':
-            case '!baixarvideo':
+        case '!cep':
 
-                if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o video sem o link?', id)
+            if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o cep?', id)
 
-                try {
+            let response = await axios.get(`https://viacep.com.br/ws/${args[1]}/json/pt/`)
+            const { logradouro, bairro, localidade, siafi, ibge } = response.data
 
-                    const url = `${args[1]}`
-                    const ID_VIDEO = url.split('=')[1];
-                    console.log('URL DO VIDEO ====>', url)
-                    console.log('ID DO VIDEO ====>', ID_VIDEO)
+            await client.reply(from, 'Buscando o CEP... pera um pouco', id)
+            await client.sendText(from, `🌎️ Rua: ${logradouro}, ${bairro}, ${localidade}\nSiafi: ${siafi}, Ibge: ${ibge} `)
 
-                    await client.reply(from, `Baixando e convertendo o video em mp3...`, id)
-                    await YD.download(`${ID_VIDEO}`);
+            break
 
-                    await YD.on("finished", async (err, data) => {
-                        await client.sendFile(from, data?.file, '', 'AAAAAAAAAUHHH', id)
-                        await client.reply(from, `_Ufa, eita trem pesado, mas ta na mão..._\n\n*Titulo*: ${data?.title}\n*Link*: https://youtu.be/${ID_VIDEO}\n-----\n*Transferidos*: ${Math.round(data?.stats?.transferredBytes) }kb \n*Velocidade média*: ${Math.round(data?.stats?.averageSpeed)}`, id)
-                    });
+        case '!horoscopo':
+        case '!horóscopo':
 
-                    YD.on("progress", async (progress) => {
-                        let percente = parseInt(progress?.progress?.percentage);
-                        console.log(`BAIXANDO O VIDEO ===> ${percente}%`)
-                    });
-                    
-                    YD.on("error", async (error) => {
-                        console.log(`ERRO AO BAIXAR VIDEO ===> ${JSON.stringify(error)}`);
-                        await client.reply(from, `Porra bicho, não estou conseguindo baixar, tenta de novo...`, id)
-                    });
+            if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o horoscopo?', id)
+            await client.reply(from, 'Buscando o horoscopo... pera um pouco', id)
 
-                } catch (error) {
-                    await client.reply(from, `Porra bicho, deu merda... tenta de novo. \n\n${JSON.stringify(error)}`, id)
-                }
-
+            let horoscopo = await axios.get(`https://horoscopefree.herokuapp.com/daily/pt/`)
+            const { publish, language, aries, taurus, gemini, cancer, leo, scorpio, libra, sagittarius, capricorn, aquarius, pisces } = horoscopo.data
+            switch(args[1]){
+                case 'aries':
+                    await client.sendText(from, `${aries}`)
                 break
-            
-            case '!cep':
-
-                if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o cep?', id)
-
-                let response = await axios.get(`https://viacep.com.br/ws/${args[1]}/json/pt/`)
-                const { logradouro, bairro, localidade, siafi, ibge } = response.data
-
-                await client.reply(from, 'Buscando o CEP... pera um pouco', id)
-                await client.sendText(from, `🌎️ Rua: ${logradouro}, ${bairro}, ${localidade}\nSiafi: ${siafi}, Ibge: ${ibge} `)
-
+                case 'touro':
+                    await client.sendText(from, `${taurus}`)
                 break
-
-            case '!horoscopo':
-            case '!horóscopo':
-
-                if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o horoscopo?', id)
-                await client.reply(from, 'Buscando o horoscopo... pera um pouco', id)
-
-                let horoscopo = await axios.get(`https://horoscopefree.herokuapp.com/daily/pt/`)
-                const { publish, language, aries, taurus, gemini, cancer, leo, scorpio, libra, sagittarius, capricorn, aquarius, pisces } = horoscopo.data
-                switch(args[1]){
-                    case 'aries':
-                        await client.sendText(from, `${aries}`)
-                    break
-                    case 'touro':
-                        await client.sendText(from, `${taurus}`)
-                    break
-                    case 'gemios':
-                    case 'gêmios':
-                        await client.sendText(from, `${gemini}`)
-                    break
-                    case 'cancer':
-                    case 'câncer':
-                        await client.sendText(from, `${cancer}`)
-                    break
-                    case 'leao':
-                    case 'leão':
-                        await client.sendText(from, `${leo}`)
-                    break
-                    case 'escorpiao':
-                    case 'escorpião':
-                        await client.sendText(from, `${scorpio}`)
-                    break
-                    case 'libra':
-                        await client.sendText(from, `${libra}`)
-                    break
-                    case 'sagitario':
-                    case 'sagitário':
-                        await client.sendText(from, `${sagittarius}`)
-                    break
-                    case 'capricornio':
-                        await client.sendText(from, `${capricorn}`)
-                    break
-                    case 'aquario':
-                    case 'aquário':
-                        await client.sendText(from, `${aquarius}`)
-                    break
-                    case 'peixes':
-                        await client.sendText(from, `${pisces}`)
-                    break
-                    default:
-                        await client.sendText(from, `Não encontrei nada...`)
-                }
+                case 'gemios':
+                case 'gêmios':
+                    await client.sendText(from, `${gemini}`)
                 break
-
-            case '!limpeza':
-
-                    if (!isGroupMsg) return client.reply(from, 'Este comando só pode ser usado em grupos!', id)
-                    if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado pelo grupo Admin!', id)
-
-                    await client.reply(from, `Buscando informações... pera ai`, id)
-                    const membros = await client.getGroupMembers(groupId)
-                    const grupo = await client.getGroupInfo(groupId)
-
-                    myArray = []
-                    texto = ""
-                    membros.forEach( async(data, index) => {
-                        myArray.push({id: data?.id,
-                        name: data?.name,
-                        shortName: data?.shortName,
-                        formattedName: data?.formattedName,
-                        isMe: data?.isMe,
-                        isMyContact: data?.isMyContact,
-                        isPSA: data?.isPSA,
-                        isUser: data?.isUser,
-                        isWAContact: data?.isWAContact,})
-
-                        let numero = data?.id.split('@');
-                        texto  += `\n*Número*: ${numero[0]}\n*É corporativo?* ${data?.isBusiness ? 'Sim' : 'Não'}\n-------------`
-                    });
-
-                    let blocks = await client.getBlockedIds(id);
-
-                    await client.reply(from, `-------------\n*Grupo:* ${grupo?.title}\n*Bloqueados:* ${blocks.length || '0'}\n-------------\n${texto}`, id)
-
+                case 'cancer':
+                case 'câncer':
+                    await client.sendText(from, `${cancer}`)
                 break
+                case 'leao':
+                case 'leão':
+                    await client.sendText(from, `${leo}`)
+                break
+                case 'escorpiao':
+                case 'escorpião':
+                    await client.sendText(from, `${scorpio}`)
+                break
+                case 'libra':
+                    await client.sendText(from, `${libra}`)
+                break
+                case 'sagitario':
+                case 'sagitário':
+                    await client.sendText(from, `${sagittarius}`)
+                break
+                case 'capricornio':
+                    await client.sendText(from, `${capricorn}`)
+                break
+                case 'aquario':
+                case 'aquário':
+                    await client.sendText(from, `${aquarius}`)
+                break
+                case 'peixes':
+                    await client.sendText(from, `${pisces}`)
+                break
+                default:
+                    await client.sendText(from, `Não encontrei nada...`)
+            }
+            break
 
-            case '!buscamemes':
-            case '!buscameme':
-    
-                await client.reply(from, `🌎️ Vasculhando a internet... pera um pouco`, id)
-    
-                let meme = await axios.get(`https://api.imgflip.com/get_memes`)
-    
+        case '!limpeza':
+
+                if (!isGroupMsg) return client.reply(from, 'Este comando só pode ser usado em grupos!', id)
+                if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado pelo grupo Admin!', id)
+
+                await client.reply(from, `Buscando informações... pera ai`, id)
+                const membros = await client.getGroupMembers(groupId)
+                const grupo = await client.getGroupInfo(groupId)
+
                 myArray = []
-                meme?.data?.data?.memes.forEach( async(data, index) => {
-                    myArray.push({'url': data?.url, 'id': data?.id, 'name': data?.name})
-                    myArray = myArray.sort(() => Math.random() - 0.5)
+                texto = ""
+                membros.forEach( async(data, index) => {
+                    myArray.push({id: data?.id,
+                    name: data?.name,
+                    shortName: data?.shortName,
+                    formattedName: data?.formattedName,
+                    isMe: data?.isMe,
+                    isMyContact: data?.isMyContact,
+                    isPSA: data?.isPSA,
+                    isUser: data?.isUser,
+                    isWAContact: data?.isWAContact,})
+
+                    let numero = data?.id.split('@');
+                    texto  += `\n*Número*: ${numero[0]}\n*É corporativo?* ${data?.isBusiness ? 'Sim' : 'Não'}\n-------------`
                 });
-    
-                myArray.forEach( async(data, index) => {
-                    urlRandom = myArray[Math.floor(Math.random()*myArray.length)];
-                    if( index < 6 ){
-                        await client.sendImage(from, `${urlRandom?.url}`, `bot do jhon`, `*ID:* ${urlRandom?.id}\n*REF:* ${urlRandom?.name}` )
-                    }
-                });
-    
-                break
-    
-            case '!escrevememe':
-    
-                if (args.length === 1) return client.reply(from, 'Preciso de 2 textos e o ID da imagem para montar o meme... procure uma imagem !buscameme', id)
-    
-                let queryMeme = body.split('.');
-                if(queryMeme.length <= 3) return client.reply(from, 'Preciso de todos os parametros para montar o meme', id)
-    
-                if (queryMeme[1].length == 0) return client.reply(from, 'Preciso do texto 1...', id)
-                if (queryMeme[2].length == 0) return client.reply(from, 'Preciso do texto 2...', id)
-                if (queryMeme[3].length == 0 && queryMeme[3].length <= 3 ) return client.reply(from, 'Preciso de um ID...', id)
-    
-                let text0 = queryMeme[1] ?? 'Como eu vou adivinhar'
-                let text1 = queryMeme[2] ?? 'O que devo escrever?'
-                let text2 = queryMeme[3] ?? '91545132'
-    
-                let dataSend = `text0=${encodeURIComponent(text0)}&text1=${encodeURIComponent(text1)}&template_id=${text2}&username=${encodeURIComponent('jhowjhoe')}&password=${encodeURIComponent('sdVKRA2QZm9fQx!')}`
-                let makeMeme = await axios({
-                    method: "post",
-                    url: "https://api.imgflip.com/caption_image",
-                    data: dataSend,
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                })
-    
-                if(makeMeme?.data?.success != true) return client.reply(from, `${makeMeme?.data?.error_message}`, id)
-                await client.sendImage(from, `${makeMeme?.data?.data?.url}`, `bot do jhon`, `Pronto, meme gerado com sucesso. você pode visualizar ele aqui nesse site ${makeMeme?.data?.data?.page_url}` )
-    
-                break
-    
-            case '!clima':
-    
-                if (args.length === 1) return client.reply(from, 'Ainda não adivinho coisas... preciso saber a cidade também', id)
-    
-                if(typeof(args[1]) == 'undefined') {
-                    return await client.reply(from, `Coloca um . antes da cidade`, id)
+
+                let blocks = await client.getBlockedIds(id);
+
+                await client.reply(from, `-------------\n*Grupo:* ${grupo?.title}\n*Bloqueados:* ${blocks.length || '0'}\n-------------\n${texto}`, id)
+
+            break
+
+        case '!buscamemes':
+        case '!buscameme':
+
+            await client.reply(from, `🌎️ Vasculhando a internet... pera um pouco`, id)
+
+            let meme = await axios.get(`https://api.imgflip.com/get_memes`)
+
+            myArray = []
+            meme?.data?.data?.memes.forEach( async(data, index) => {
+                myArray.push({'url': data?.url, 'id': data?.id, 'name': data?.name})
+                myArray = myArray.sort(() => Math.random() - 0.5)
+            });
+
+            myArray.forEach( async(data, index) => {
+                urlRandom = myArray[Math.floor(Math.random()*myArray.length)];
+                if( index < 6 ){
+                    await client.sendImage(from, `${urlRandom?.url}`, `bot do jhon`, `*ID:* ${urlRandom?.id}\n*REF:* ${urlRandom?.name}` )
                 }
+            });
+
+            break
+
+        case '!escrevememe':
+
+            if (args.length === 1) return client.reply(from, 'Preciso de 2 textos e o ID da imagem para montar o meme... procure uma imagem !buscameme', id)
+
+            let queryMeme = body.split('.');
+            if(queryMeme.length <= 3) return client.reply(from, 'Preciso de todos os parametros para montar o meme', id)
+
+            if (queryMeme[1].length == 0) return client.reply(from, 'Preciso do texto 1...', id)
+            if (queryMeme[2].length == 0) return client.reply(from, 'Preciso do texto 2...', id)
+            if (queryMeme[3].length == 0 && queryMeme[3].length <= 3 ) return client.reply(from, 'Preciso de um ID...', id)
+
+            let text0 = queryMeme[1] ?? 'Como eu vou adivinhar'
+            let text1 = queryMeme[2] ?? 'O que devo escrever?'
+            let text2 = queryMeme[3] ?? '91545132'
+
+            let dataSend = `text0=${encodeURIComponent(text0)}&text1=${encodeURIComponent(text1)}&template_id=${text2}&username=${encodeURIComponent('jhowjhoe')}&password=${encodeURIComponent('sdVKRA2QZm9fQx!')}`
+            let makeMeme = await axios({
+                method: "post",
+                url: "https://api.imgflip.com/caption_image",
+                data: dataSend,
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            })
+
+            if(makeMeme?.data?.success != true) return client.reply(from, `${makeMeme?.data?.error_message}`, id)
+            await client.sendImage(from, `${makeMeme?.data?.data?.url}`, `bot do jhon`, `Pronto, meme gerado com sucesso. você pode visualizar ele aqui nesse site ${makeMeme?.data?.data?.page_url}` )
+
+            break
     
-                let cidade = body.split('.');
-                console.log(typeof(cidade[1]))
+        case '!clima':
+
+            if (args.length === 1) return client.reply(from, 'Ainda não adivinho coisas... preciso saber a cidade também', id)
+
+            if(typeof(args[1]) == 'undefined') {
+                return await client.reply(from, `Coloca um . antes da cidade`, id)
+            }
+
+            let cidade = body.split('.');
+            console.log(typeof(cidade[1]))
+
+            if(typeof(cidade[1]) !== 'undefined'){
+                if (cidade[1].length == 0) return client.reply(from, 'Preciso de uma cidade...', id)
+
+                await client.reply(from, `Verificando com São Pedro como está o clima em ${cidade[1]}... pera um pouco`, id)
     
-                if(typeof(cidade[1]) !== 'undefined'){
-                    if (cidade[1].length == 0) return client.reply(from, 'Preciso de uma cidade...', id)
+                let clima = await axios.get(`http://clima-bksoft.apibrasil.com.br/api/weather/city/?city=${ encodeURI(cidade[1]) }`)
     
-                    await client.reply(from, `Verificando com São Pedro como está o clima em ${cidade[1]}... pera um pouco`, id)
-        
-                    let clima = await axios.get(`http://clima-bksoft.apibrasil.com.br/api/weather/city/?city=${ encodeURI(cidade[1]) }`)
-        
-                    if(clima?.data?.cod == '404') return  await client.reply(from, `Uai... ${clima?.data?.message}`, id)
-    
-                    await client.sendText(from, `*Temperatura:* ${clima?.data?.main?.temp} ºC \n*Sensação térmica:* ${clima?.data?.main?.feels_like} ºC \n*Temperatura mínima:* ${clima?.data?.main?.temp_min} ºC \n*Temperatura máxima:* ${clima?.data?.main?.temp_max} ºC \n*Pressão atmosférica:* ${clima?.data?.main?.pressure}\n*Umidade:* ${clima?.data?.main?.humidity}%
+                if(clima?.data?.cod == '404') return  await client.reply(from, `Uai... ${clima?.data?.message}`, id)
+
+                await client.sendText(from, `*Temperatura:* ${clima?.data?.main?.temp} ºC \n*Sensação térmica:* ${clima?.data?.main?.feels_like} ºC \n*Temperatura mínima:* ${clima?.data?.main?.temp_min} ºC \n*Temperatura máxima:* ${clima?.data?.main?.temp_max} ºC \n*Pressão atmosférica:* ${clima?.data?.main?.pressure}\n*Umidade:* ${clima?.data?.main?.humidity}%
 ----------------------\n${clima?.data?.name} - lat: ${clima?.data?.coord?.lat} lon: ${clima?.data?.coord?.lon}
-                    `)
-    
-                }else{
-                    
-                    return client.reply(from, 'Preciso de uma cidade...', id)
-                }
-                    
-                break
+                `)
+
+            }else{
+                
+                return client.reply(from, 'Preciso de uma cidade...', id)
+            }
+                
+            break
 
         case '!meunumero':
 
@@ -618,7 +581,6 @@ module.exports = msgHandler = async (client, message) => {
         case '!kickme':
 
             client.reply(from, 'Agooora! kkkk', id)
-
             await client.removeParticipant(groupId, sender.id)
 
             break
