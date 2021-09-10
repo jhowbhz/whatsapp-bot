@@ -2,6 +2,7 @@ const { create, Client, decryptMedia, ev, SimpleListener, smartUserAgent, Notifi
 const welcome = require('./lib/welcome')
 const msgHandler = require('./msgHndlr')
 const options = require('./options')
+const { help } = require('./lib/help')
 
 const WEBHOOK_ADDRESS = 'https://en6p3ti7f72f9jz.m.pipedream.net'
 
