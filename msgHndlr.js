@@ -799,7 +799,7 @@ module.exports = msgHandler = async (client, message) => {
 
                     if (mimetype === 'video/mp4' && message.duration < 30 || mimetype === 'image/gif' && message.duration < 30) {
                         const mediaData = await decryptMedia(message, uaOverride)
-                        client.reply(from, 'Já to fazendo a figurinha...', id)
+                        client.reply(from, 'Pera ai, já estou fazendo a figurinha...', id)
 
                         await client.sendMp4AsSticker(from, `data:${mimetype};base64,${mediaData.toString('base64')}`, null, { stickerMetadata: true, author: "Bot do JhowJhoe", pack: "PackDoBot", fps: 10, square: '512', loop: 0 })
 
