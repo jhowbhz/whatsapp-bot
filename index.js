@@ -66,7 +66,7 @@ const start = async (client = new Client()) => {
         client.onIncomingCall( async (call) => {
             console.log('ALGUEM ESTÁ LIGANDO ===>',call)
 
-            await client.sendText(call.peerJid, "Não consigo receber chamadas. Ligou novamente= bock!")
+            await client.sendText(call.peerJid, "Não consigo receber chamadas, você será bloqueado!")
                     .then(() => client.contactBlock(call.peerJid))
         });
         
